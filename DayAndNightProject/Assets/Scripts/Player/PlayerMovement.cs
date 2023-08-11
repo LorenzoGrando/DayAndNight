@@ -36,7 +36,6 @@ public class PlayerMovement : MonoBehaviour
     {
         ReadAxisInput();
         if(Input.GetAxisRaw("Jump") != 0) {
-            Debug.Log("Attempted Jump");
             Jump();
         }
     }
