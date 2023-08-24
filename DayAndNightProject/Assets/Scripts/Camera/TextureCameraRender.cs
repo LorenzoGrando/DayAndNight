@@ -11,16 +11,6 @@ public class TextureCameraRender : MonoBehaviour
     private Camera textureCamera;
     private RenderTexture currentRenderTexture;
 
-    #if UNITY_EDITOR
-    void OnEnable()
-    {
-        if(textureCamera.targetTexture == null) {
-            currentRenderTexture = CreateRenderTexture();
-            textureCamera.targetTexture = currentRenderTexture;
-        }
-    }
-    #endif
-
     void Start()
     {
         if(currentRenderTexture != null) {
@@ -30,6 +20,7 @@ public class TextureCameraRender : MonoBehaviour
 
         if(textureCamera.targetTexture == null) {
             currentRenderTexture = CreateRenderTexture();
+            textureCamera.targetTexture = currentRenderTexture;
         }
     }
 
