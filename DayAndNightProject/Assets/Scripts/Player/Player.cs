@@ -52,11 +52,17 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(_controller.Collisions.above || _controller.Collisions.below) {
+            _velocity.y = 0;
+        }
+
+        bool bufferJump = Time.time < _lastJumpInputTime + jumpBufferTime;
+        bool applyCoyoteTime = Time.time < _controller.Collisions.lastTimeOnGround + coyoteTimeThreshold;
+
         if(_jumpInput != 0) {
             _lastJumpInputTime = Time.time;
         }
-        bool bufferJump = Time.time < _lastJumpInputTime + jumpBufferTime;
-        bool applyCoyoteTime = Time.time < _controller.Collisions.lastTimeOnGround + coyoteTimeThreshold;
+
         if(bufferJump && applyCoyoteTime) {
             Jump();
         }
@@ -68,10 +74,6 @@ public class Player : MonoBehaviour
         }
 
         PlayerMovement();
-
-        if(_controller.Collisions.above || _controller.Collisions.below) {
-            _velocity.y = 0;
-        }
     }
 
     #endregion

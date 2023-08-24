@@ -101,7 +101,7 @@ public class Controller2D : MonoBehaviour
 
                 Collisions.below  = directionY == -1;
                 Collisions.above = directionY == 1;
-                if(Time.time > Collisions.lastTimeOnGround) {
+                if(Time.time > Collisions.lastTimeOnGround && Collisions.below) {
                     Collisions.lastTimeOnGround = Time.time;
                 }
             }
