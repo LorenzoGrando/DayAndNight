@@ -14,13 +14,20 @@ public class TextureCameraRender : MonoBehaviour
     void Start()
     {
         if(currentRenderTexture != null) {
-            Destroy(currentRenderTexture);
             textureCamera.targetTexture = null;
+            Destroy(currentRenderTexture);
         }
 
-        if(textureCamera.targetTexture == null) {
-            currentRenderTexture = CreateRenderTexture();
-            textureCamera.targetTexture = currentRenderTexture;
+        
+        currentRenderTexture = CreateRenderTexture();
+        textureCamera.targetTexture = currentRenderTexture;
+    }
+
+    void  OnDisable()
+    {
+        if(currentRenderTexture != null) {
+            textureCamera.targetTexture = null;
+            DestroyImmediate(currentRenderTexture);
         }
     }
 

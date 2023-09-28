@@ -1,9 +1,10 @@
 Shader "Custom/GlowEffect"
 {
     Properties {
-        _BaseMap ("Base Texture", 2D) = "red" {}
+        _BaseMap ("Base Texture", 2D) = "white" {}
         _ScreenRenderTexture("Render Texture", 2D) = "white"{}
         _OutlineColor("OutlineColor", Color) = (1,1,1,1)
+        _TemporaryColor("Temporary Color", Color) = (1,1,1,1)
     }
 
     SubShader{
@@ -56,6 +57,8 @@ Shader "Custom/GlowEffect"
             float4 _OutlineColor;
             float _OutlineWidth;
 
+            float4 _TemporaryColor;
+
             float2 ConvertUVToPolar(float2 uv, float2 center, float radialScale, float lenghtScale) {
                 float2 delta = uv - center;
                 float radius = length(delta) * 2 * radialScale;
@@ -89,7 +92,7 @@ Shader "Custom/GlowEffect"
 
                 float4 screenColor = SAMPLE_TEXTURE2D(_ScreenRenderTexture, sampler_ScreenRenderTexture, i.screenPos.xy / i.screenPos.w);
                 float4 textureColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
-
+                textureColor *= _TemporaryColor;
                 screenColor *= (textureColor);
 
                 if(invertedPolar.x < 1 - _OutlineWidth) {
