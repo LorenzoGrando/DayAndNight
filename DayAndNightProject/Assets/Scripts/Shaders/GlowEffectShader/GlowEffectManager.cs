@@ -9,6 +9,7 @@ public class GlowEffectManager : MonoBehaviour
 {
     public Material effectMat;
     public TextureCameraRender textureCamera;
+    [SerializeField]
     private CircleCollider2D _areaTriggerCollider2D;
 
     [SerializeField]
@@ -41,7 +42,7 @@ public class GlowEffectManager : MonoBehaviour
         public float outlineWidth;
         public Color temporaryOverlayColor;
     }
-    void Start()
+    void Awake()
     {
         if(effectMat == null || textureCamera == null) {
             Debug.LogWarning("Assign all references while in Editor");
@@ -50,6 +51,12 @@ public class GlowEffectManager : MonoBehaviour
         if(_areaTriggerCollider2D == null) {
             _areaTriggerCollider2D = GetComponentInChildren<CircleCollider2D>();
         }
+        if(effectMat != null) {
+            Material newInstancedMaterial = Instantiate(effectMat);
+            effectMat = newInstancedMaterial;
+            GetComponentInChildren<MeshRenderer>().material = effectMat;
+        }
+        thisGlowType = GlowType.Null;
     }
     void Update()
     {
@@ -76,7 +83,7 @@ public class GlowEffectManager : MonoBehaviour
         effectMat.SetColor("_TemporaryColor", currentMaskData.temporaryOverlayColor);
     }
 
-    public void StartGlow(GlowType glowType) {
+    public void StartGlow(GlowType glowType, bool fadeOut) {
         thisGlowType = glowType;
         if(!isActive) {
             if(glowType == GlowType.Sun) {
@@ -90,12 +97,25 @@ public class GlowEffectManager : MonoBehaviour
             currentTweenSequence = DOTween.Sequence();
             currentTweenSequence.Append(transform.DOScale(Vector3.one * currentTargetScale, animDuration));
             currentTweenSequence.AppendInterval(delayBeforeFadeOut);
+            if(fadeOut) {
+                currentTweenSequence.Append(transform.DOScale(Vector3.zero, animDuration));
+                currentTweenSequence.OnComplete(() => EndGlowEffect());
+            }
+        }
+    }
+
+    public void ForceFadeOutGlow() {
+        if(isActive) {
+            currentTweenSequence?.Kill();
+            currentTweenSequence = DOTween.Sequence();
             currentTweenSequence.Append(transform.DOScale(Vector3.zero, animDuration));
             currentTweenSequence.OnComplete(() => EndGlowEffect());
         }
     }
 
-    private void EndGlowEffect() {
+    public void EndGlowEffect() {
+        transform.localScale = Vector3.zero;
+        currentTweenSequence = null;
         isActive = false;
     }
 
