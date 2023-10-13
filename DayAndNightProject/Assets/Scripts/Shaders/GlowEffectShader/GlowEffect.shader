@@ -90,6 +90,7 @@ Shader "Custom/GlowEffect"
                 float clipValue = invertedPolar + _ThresholdValue;
                 clip(clipValue);
 
+
                 float4 screenColor = SAMPLE_TEXTURE2D(_ScreenRenderTexture, sampler_ScreenRenderTexture, i.screenPos.xy / i.screenPos.w);
                 float4 textureColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
                 textureColor *= _TemporaryColor;
@@ -100,7 +101,7 @@ Shader "Custom/GlowEffect"
                 }
                 return float4(screenColor.xyz,1);
             }
-            
+
             ENDHLSL
         }
     }

@@ -6,7 +6,6 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     #region Component References
-
     private Controller2D _controller;
 
     #endregion
