@@ -154,5 +154,9 @@ public class CrystalLizard : MonoBehaviour {
         _controller.Move(_velocity * Time.deltaTime);
     }
 
+    public Vector2 GetVelocity() {
+        return _velocity;
+    }
+
     #endregion
 }
