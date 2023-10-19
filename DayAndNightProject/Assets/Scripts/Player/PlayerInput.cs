@@ -6,14 +6,18 @@ using UnityEngine;
 public class PlayerInput : MonoBehaviour
 {
     private Player _player;
+    private CharacterMenuManager _characterMenuManager;
     [SerializeField]
     private PlayerInteractor interactor;
     private GlowEffectManager _glowEffectManager;
     [SerializeField]
     private ControlMap inputActions;
-    void Start()
+    public enum InputMaps {Gameplay, UI};
+    private InputMaps activeInputMap;
+    void OnEnable()
     {
         _player = GetComponent<Player>();
+        _characterMenuManager = FindObjectOfType<CharacterMenuManager>();
         if(transform.childCount > 0) {
             _glowEffectManager = GetComponentInChildren<GlowEffectManager>();
         }
@@ -22,6 +26,8 @@ public class PlayerInput : MonoBehaviour
             inputActions = new ControlMap();
             inputActions.Enable();
         }
+
+        activeInputMap = InputMaps.Gameplay;
     }
 
     void OnDisable()
@@ -33,13 +39,27 @@ public class PlayerInput : MonoBehaviour
 
     void Update()
     {
+        if(activeInputMap == InputMaps.Gameplay) {
+            GameplayInputs();
+        }
+        else if(activeInputMap == InputMaps.UI) {
+            UIInputs();
+        }
+    }
+
+    private void GameplayInputs() {
         float inputX = inputActions.Gameplay.Move.ReadValue<Vector2>().x;
         float jumpInput = inputActions.Gameplay.Jump.ReadValue<float>();
         float interactInput = inputActions.Gameplay.Interact.triggered ? 1 : 0;
         float sunAuraEffectInput = inputActions.Gameplay.SunGlowAction.ReadValue<float>();
         float moonAuraEffectInput = inputActions.Gameplay.MoonGlowAction.ReadValue<float>();
+        float characterMenuInput = inputActions.Gameplay.CharacterMenu.triggered ? 1 : 0;
 
-
+        if(characterMenuInput != 0) {
+            _characterMenuManager.EnableMenu();
+            UpdateActiveActionMap(InputMaps.UI);
+            return;
+        }
 
         _player.SetDirectionalInput(inputX);
         _player.SetJumpInput(jumpInput);
@@ -47,15 +67,19 @@ public class PlayerInput : MonoBehaviour
 
         Debug.Log(interactor._lastKnownInteractable != null);
         if(interactor._lastKnownInteractable != null) {
-            if(sunAuraEffectInput > 0) {
-                interactor.OnActiveGlowInputPressed(GlowEffectManager.GlowType.Sun);
+            if(interactor._lastKnownInteractable.GetType() == typeof(SphereTotemManager)) {
+                SphereTotemManager totemRef = interactor._lastKnownInteractable as SphereTotemManager;
+                if(totemRef.currentSphere != null) {
+                    if(sunAuraEffectInput > 0) {
+                        interactor.OnActiveGlowInputPressed(GlowEffectManager.GlowType.Sun);
+                    }
+                    if(moonAuraEffectInput > 0) {
+                        interactor.OnActiveGlowInputPressed(GlowEffectManager.GlowType.Moon);
+                    }
+                    return;
+                }
             }
-            if(moonAuraEffectInput > 0) {
-                interactor.OnActiveGlowInputPressed(GlowEffectManager.GlowType.Moon);
-            }
-            return;
         }
-
         else {
             if(sunAuraEffectInput > 0 && _glowEffectManager != null) {
                 _glowEffectManager.StartGlow(GlowEffectManager.GlowType.Sun, true);
@@ -64,5 +88,18 @@ public class PlayerInput : MonoBehaviour
                 _glowEffectManager.StartGlow(GlowEffectManager.GlowType.Moon, true);
             }
         }
+    }
+
+    private void UIInputs() {
+        float directionalInput = inputActions.UI.DirectionInput.ReadValue<Vector2>().x;
+        float interactInput = inputActions.UI.Interact.triggered ? 1 : 0;
+        float escapeInput = inputActions.UI.Escape.triggered ? 1 : 0;
+        float characterMenuInput = inputActions.UI.CharacterMenu.triggered ? 1 : 0;
+
+        _characterMenuManager.InputUpdate(directionalInput, interactInput, escapeInput, characterMenuInput);
+    }
+
+    public void UpdateActiveActionMap(InputMaps newActiveMap) {
+        activeInputMap = newActiveMap;
     }
 }

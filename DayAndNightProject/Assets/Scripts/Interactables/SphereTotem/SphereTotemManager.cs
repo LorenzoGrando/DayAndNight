@@ -7,12 +7,14 @@ public class SphereTotemManager : MonoBehaviour, IInteractable
     private GlowEffectManager _totemGlowEffect;
     private PlayerInteractor _lastPlayerInteractor;
     private IInteractable interactable;
-    private Collider2D _collider;
-    private bool _hasSphere = false;
+    public CrystalSphere currentSphere {get; private set;}
+    private SpriteRenderer _spriteObjectRenderer;
+    [SerializeField]
+    private Sprite[] stateSprites;
 
     void OnEnable() {
         _totemGlowEffect = _totemGlowEffect != null ? _totemGlowEffect : GetComponentInChildren<GlowEffectManager>();
-        _collider = GetComponent<Collider2D>();
+        _spriteObjectRenderer = transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
         interactable = this;
     }
 
@@ -47,12 +49,22 @@ public class SphereTotemManager : MonoBehaviour, IInteractable
     }
 
     void IInteractable.OnInteractorActivate() {
-        if(_hasSphere == true) {
-            _hasSphere = false;
+        if(currentSphere == null) {
+            if(_lastPlayerInteractor.playerDataManager.currentPlayerData.currentHeldSphere != null) {
+                CrystalSphere sphere = _lastPlayerInteractor.playerDataManager.currentPlayerData.currentHeldSphere;
+                _lastPlayerInteractor.LeaveSphere();
+                GetSphere(sphere);
+                _spriteObjectRenderer.sprite = stateSprites[1];
+                _totemGlowEffect.thisGlowType = GlowEffectManager.GlowType.Null;
+            }
         }
         else {
-            _totemGlowEffect.ForceFadeOutGlow();
-            _hasSphere = true;
+            if(_lastPlayerInteractor.playerDataManager.currentPlayerData.currentHeldSphere == null) {
+                _totemGlowEffect.ForceFadeOutGlow();
+                _lastPlayerInteractor.GetSphere(currentSphere);
+                currentSphere = null;
+                _spriteObjectRenderer.sprite = stateSprites[0];
+            }
         }
     }
 
@@ -61,5 +73,12 @@ public class SphereTotemManager : MonoBehaviour, IInteractable
             _totemGlowEffect.EndGlowEffect();
             _totemGlowEffect.StartGlow(glowType, false);
         }
+    }
+
+    void GetSphere(CrystalSphere sphere) {
+        currentSphere = sphere;
+        currentSphere.UpdateSphereStatus(CrystalSphere.SphereStatus.Hidden);
+        currentSphere.transform.parent = this.transform.parent;
+        currentSphere.transform.localPosition = Vector3.zero;
     }
 }

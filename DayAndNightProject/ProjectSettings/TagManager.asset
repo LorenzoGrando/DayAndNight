@@ -6,6 +6,7 @@ TagManager:
   tags:
   - GlowEffect
   - PlayerInteractor
+  - CrystalLizard
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - Disabled Platforms
   - PostEffects
   - Background
-  - 
+  - Moving Enemies
   - 
   - 
   - 

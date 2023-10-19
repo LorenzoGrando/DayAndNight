@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Controller2D))]
 public class Player : MonoBehaviour
 {
+    public event Action<float> OnPlayerDirectionalInput;
+
     #region Component References
     private Controller2D _controller;
 
@@ -81,6 +84,7 @@ public class Player : MonoBehaviour
 
     public void SetDirectionalInput(float input) {
         _directionalInput = input;
+        OnPlayerDirectionalInput?.Invoke(_directionalInput);
     }
     public void SetJumpInput(float input) {
         _jumpInput = input;
