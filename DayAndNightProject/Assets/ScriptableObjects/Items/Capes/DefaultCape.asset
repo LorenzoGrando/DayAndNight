@@ -17,7 +17,12 @@ MonoBehaviour:
   consumableType: 0
   itemQuantity: 0
   isUnlocked: 1
-  itemName: 
-  itemThemeDescription: 
-  itemFunctionalitDescription: 
+  itemName: Cloud Cape
+  itemThemeDescription: This dark robe has been worn since birth, and shows a path
+    yet undecided.
+  itemFunctionalitDescription: No Effects.
   itemSprite: {fileID: 0}
+  capeGlowType: 0
+  buyRequirements:
+  - 0
+  - 0

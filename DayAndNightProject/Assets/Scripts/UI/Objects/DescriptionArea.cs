@@ -1,18 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class DescriptionArea : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public TextMeshProUGUI descriptionText;
+    public TextMeshProUGUI themeText;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void UpdateTexts(Item currentItem) {
+        descriptionText.text = currentItem.itemFunctionalitDescription;
+        themeText.text = currentItem.itemThemeDescription;
     }
 }

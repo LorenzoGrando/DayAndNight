@@ -17,7 +17,12 @@ MonoBehaviour:
   consumableType: 0
   itemQuantity: 0
   isUnlocked: 0
-  itemName: 
-  itemThemeDescription: 
-  itemFunctionalitDescription: 
+  itemName: Moon Cape
+  itemThemeDescription: The starlit aspect of this cape reminds the user of the darkness
+    of night.
+  itemFunctionalitDescription: Increases the total duration of your Glow.
   itemSprite: {fileID: 0}
+  capeGlowType: 2
+  buyRequirements:
+  - 2
+  - 1

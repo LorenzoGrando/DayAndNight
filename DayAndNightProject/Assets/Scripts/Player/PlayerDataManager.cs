@@ -14,6 +14,9 @@ public class PlayerDataManager : MonoBehaviour {
 
     public void UpdateInventory(Inventory newInventory) {
         currentPlayerData.currentInventory = newInventory;
+        if(currentPlayerData.currentInventory.activeCape == null) {
+            currentPlayerData.currentInventory.activeCape = currentPlayerData.currentInventory.capeItems[0];
+        }
     }
 
     public void ResetInventory() {
@@ -31,6 +34,8 @@ public class PlayerDataManager : MonoBehaviour {
             cape.isUnlocked = false;
         }
 
+        inventory.activeCape = inventory.capeItems[0];
+
         UpdateInventory(inventory);
     }
 
@@ -38,11 +43,24 @@ public class PlayerDataManager : MonoBehaviour {
         return currentPlayerData.currentInventory;
     }
 
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.R)) {
-            ResetInventory();
+    public bool UpdateActiveCape(Item newCapeRef) {
+        if(currentPlayerData.currentInventory.activeCape != newCapeRef) {
+            currentPlayerData.currentInventory.activeCape = newCapeRef;
+            return true;
         }
+        return false;
+    }
+
+    public void UpdatePlayerData(PlayerData newData) {
+        currentPlayerData.currentHeldSphere = newData.currentHeldSphere;
+        ResetInventory();
+        PerformLoadInventoryData(newData.currentInventory);
+        UpdateInventory(currentPlayerData.currentInventory);
+        UpdateActiveCape(currentPlayerData.currentInventory.activeCape);
+    }
+
+    private void PerformLoadInventoryData(Inventory inventoryToLoad) {
+        currentPlayerData.currentInventory.UpdateInventoryData(inventoryToLoad);
     }
  }
 
@@ -51,4 +69,9 @@ public class PlayerData {
     public CrystalSphere currentHeldSphere;
     [SerializeField]
     public Inventory currentInventory = new Inventory();
+
+    public PlayerData() {
+        currentHeldSphere = null;
+         currentInventory = new Inventory();
+    }
 }

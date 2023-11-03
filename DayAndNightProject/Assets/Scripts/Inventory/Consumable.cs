@@ -25,6 +25,7 @@ public class Consumable : MonoBehaviour
     public void CollectItem() {
         wasCollected = true;
         gameObject.SetActive(false);
+        FindObjectOfType<ConsumableLoader>().UpdateConsumableData();
     }
 
     public void UpdateItem(Item newItem) {

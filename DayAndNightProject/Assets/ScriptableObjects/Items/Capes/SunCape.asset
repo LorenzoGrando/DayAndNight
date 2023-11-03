@@ -17,7 +17,12 @@ MonoBehaviour:
   consumableType: 0
   itemQuantity: 0
   isUnlocked: 0
-  itemName: 
-  itemThemeDescription: 
-  itemFunctionalitDescription: 
+  itemName: Sun Cape
+  itemThemeDescription: It is said the bright colors of this cloth emante a glow
+    as bright as the brighest of stars.
+  itemFunctionalitDescription: Increases the maximum radius of your Glow.
   itemSprite: {fileID: 0}
+  capeGlowType: 1
+  buyRequirements:
+  - 1
+  - 2

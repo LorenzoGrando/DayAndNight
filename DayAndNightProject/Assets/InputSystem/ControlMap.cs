@@ -80,6 +80,15 @@ public partial class @ControlMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""InGameMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""4d83c051-9377-428e-9efb-8fa0e4fcd904"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -280,6 +289,28 @@ public partial class @ControlMap: IInputActionCollection2, IDisposable
                     ""action"": ""CharacterMenu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e4a79ad4-771d-4980-9837-35a49814bcc6"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Default Scheme"",
+                    ""action"": ""InGameMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cd3e2232-3556-4e0a-bdb8-758ed68388a3"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Default Scheme"",
+                    ""action"": ""InGameMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -438,7 +469,7 @@ public partial class @ControlMap: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""7d8005aa-ee9b-4804-a7f3-b87dbe470ee6"",
-                    ""path"": ""<Keyboard>/backspace"",
+                    ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -449,7 +480,7 @@ public partial class @ControlMap: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""d575283c-b09e-4399-bf43-9674921732c2"",
-                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""path"": ""<Gamepad>/start"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Default Scheme"",
@@ -509,6 +540,7 @@ public partial class @ControlMap: IInputActionCollection2, IDisposable
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
         m_Gameplay_Interact = m_Gameplay.FindAction("Interact", throwIfNotFound: true);
         m_Gameplay_CharacterMenu = m_Gameplay.FindAction("CharacterMenu", throwIfNotFound: true);
+        m_Gameplay_InGameMenu = m_Gameplay.FindAction("InGameMenu", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_DirectionInput = m_UI.FindAction("DirectionInput", throwIfNotFound: true);
@@ -582,6 +614,7 @@ public partial class @ControlMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Jump;
     private readonly InputAction m_Gameplay_Interact;
     private readonly InputAction m_Gameplay_CharacterMenu;
+    private readonly InputAction m_Gameplay_InGameMenu;
     public struct GameplayActions
     {
         private @ControlMap m_Wrapper;
@@ -592,6 +625,7 @@ public partial class @ControlMap: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
         public InputAction @Interact => m_Wrapper.m_Gameplay_Interact;
         public InputAction @CharacterMenu => m_Wrapper.m_Gameplay_CharacterMenu;
+        public InputAction @InGameMenu => m_Wrapper.m_Gameplay_InGameMenu;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -619,6 +653,9 @@ public partial class @ControlMap: IInputActionCollection2, IDisposable
             @CharacterMenu.started += instance.OnCharacterMenu;
             @CharacterMenu.performed += instance.OnCharacterMenu;
             @CharacterMenu.canceled += instance.OnCharacterMenu;
+            @InGameMenu.started += instance.OnInGameMenu;
+            @InGameMenu.performed += instance.OnInGameMenu;
+            @InGameMenu.canceled += instance.OnInGameMenu;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -641,6 +678,9 @@ public partial class @ControlMap: IInputActionCollection2, IDisposable
             @CharacterMenu.started -= instance.OnCharacterMenu;
             @CharacterMenu.performed -= instance.OnCharacterMenu;
             @CharacterMenu.canceled -= instance.OnCharacterMenu;
+            @InGameMenu.started -= instance.OnInGameMenu;
+            @InGameMenu.performed -= instance.OnInGameMenu;
+            @InGameMenu.canceled -= instance.OnInGameMenu;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -745,6 +785,7 @@ public partial class @ControlMap: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnCharacterMenu(InputAction.CallbackContext context);
+        void OnInGameMenu(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

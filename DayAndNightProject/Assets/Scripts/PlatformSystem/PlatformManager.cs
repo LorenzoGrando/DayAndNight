@@ -9,6 +9,7 @@ public class PlatformManager : MonoBehaviour
     private GameObject platformObject;
     [SerializeField]
     private PlatformData thisPlatformData;
+    private GameObject sunSpriteObject;
 
     private GlowEffectManager _lastGlowEffectInteracted;
     private GlowEffectManager _lastPlayerGlowEffectInteracted = null;
@@ -18,6 +19,7 @@ public class PlatformManager : MonoBehaviour
         if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Sun) {
             UpdatePlatformCollider(true);
             platformObject.layer = LayerMask.NameToLayer("Active Platforms");
+            sunSpriteObject = platformObject.transform.GetChild(0).gameObject;
         }
         if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Moon) {
             UpdatePlatformStatus(false);
@@ -70,7 +72,15 @@ public class PlatformManager : MonoBehaviour
         }
     }
     public void UpdatePlatformStatus(bool newStatus) {
-        platformObject.SetActive(newStatus);
+        if(platformObject.activeSelf != newStatus) {
+            platformObject.SetActive(newStatus);
+            if(newStatus) {
+                platformObject.layer = LayerMask.NameToLayer("Active Platforms");
+            }
+            else {
+                platformObject.layer = LayerMask.NameToLayer("Disabled Platforms");
+            }
+        }
     }
 
     public void UpdatePlatformCollider(bool newStatus) {
@@ -82,23 +92,24 @@ public class PlatformManager : MonoBehaviour
         if(colliderGlowType == GlowEffectManager.GlowType.Sun && 
             thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Sun) {
             UpdatePlatformCollider(false);
+            sunSpriteObject.SetActive(false);
             platformObject.layer = LayerMask.NameToLayer("Disabled Platforms");
         }
         if(colliderGlowType == GlowEffectManager.GlowType.Moon && 
             thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Moon) {
             UpdatePlatformStatus(true);
-            platformObject.layer = LayerMask.NameToLayer("Active Platforms");
+            
         }
     }
 
     private void OnExitGlowBehaviour() {
         if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Sun) {
             UpdatePlatformCollider(true);
+            sunSpriteObject.SetActive(true);
             platformObject.layer = LayerMask.NameToLayer("Active Platforms");
         }
         if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Moon) {
             UpdatePlatformStatus(false);
-            platformObject.layer = LayerMask.NameToLayer("Disabled Platforms");
         }
     }
 }

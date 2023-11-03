@@ -7,21 +7,17 @@ public class SaveLoadObject : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.CompareTag("Player")) {
-            SaveData currentSaveData = SaveLoadSystem.GetCurrentSave();
-            if(currentSaveData.LastCheckpointReached != this) {
+            SaveData currentSaveData = SaveLoadSystem.GetCurrentSave(out bool isDefault);
+            if (currentSaveData.LastCheckpointReached != this) {
                 SaveGame();
             }
         }
     }
     private void SaveGame(){
-        SaveData newSaveData = new SaveData
-        {
-            LastCheckpointReached = this,
-            TotalSaveIndex = SaveLoadSystem.GetCurrentSave().TotalSaveIndex + 1,
-            GlobalPlayerPosition = gameObject.transform.position
-        };
+        SaveData newSaveData = new SaveData(gameObject.transform.position, this, FindObjectOfType<PlayerDataManager>().currentPlayerData,
+                            FindObjectOfType<ShrineLoader>().shrineSaveData, FindObjectOfType<ConsumableLoader>().GetData(), false);
 
-        SaveLoadSystem.Save(newSaveData);
+        SaveLoadSystem.Save(false, newSaveData);
         Debug.Log("Saved on new Checkpoint");
     }
 }
