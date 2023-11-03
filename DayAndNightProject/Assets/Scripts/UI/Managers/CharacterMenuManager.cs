@@ -20,6 +20,7 @@ public class CharacterMenuManager : MonoBehaviour
     private int currentHoverIndex;
 
     private float lastSelectorUpdateTime;
+    private float lastSelectorInteractTime;
 
 
     void OnEnable()
@@ -41,27 +42,38 @@ public class CharacterMenuManager : MonoBehaviour
     }
 
     public void InputUpdate(float directional, float interact, float escape, float characterMenuLeaver) {
-        if(characterMenuLeaver != 0 || escape != 0) {
-            DisableMenu();
-            FindObjectOfType<PlayerInput>().UpdateActiveActionMap(PlayerInput.InputMaps.Gameplay);
-        }
-
-        if(lastSelectorUpdateTime + 0.115f < Time.time) {
-            Debug.Log(directional);
-            if(directional > 0) {
-                currentHoverIndex++;
-                if(currentHoverIndex >= capeTiles.Length)
-                    currentHoverIndex = capeTiles.Length - 1;    
-            }
-            else if(directional < 0) {
-                currentHoverIndex--;
-                if(currentHoverIndex < 0)
-                    currentHoverIndex = 0;
+        if(canvasEnablerObject.activeSelf == true) {
+            if(characterMenuLeaver != 0 || escape != 0) {
+                DisableMenu();
+                FindObjectOfType<PlayerInput>().UpdateActiveActionMap(PlayerInput.InputMaps.Gameplay);
             }
 
-            lastSelectorUpdateTime = Time.time;
+            if(lastSelectorUpdateTime + 0.115f < Time.time) {
+                if(directional > 0) {
+                    currentHoverIndex++;
+                    if(currentHoverIndex >= capeTiles.Length)
+                        currentHoverIndex = capeTiles.Length - 1;    
+                }
+                else if(directional < 0) {
+                    currentHoverIndex--;
+                    if(currentHoverIndex < 0)
+                        currentHoverIndex = 0;
+                }
+
+                lastSelectorUpdateTime = Time.time;
+            }
+
+            UpdateSelectorPosition();
+
+            if(lastSelectorInteractTime + 0.115f < Time.time) {
+                if(interact != 0) {
+                    OnInteract();
+                    lastSelectorInteractTime = Time.time;
+                }
+            }
+
+            UpdateInventory();
         }
-        UpdateSelectorPosition();
     }
 
     void UpdateInventory() {
@@ -69,7 +81,8 @@ public class CharacterMenuManager : MonoBehaviour
 
         for(int i = 0; i < capeTiles.Length; i++) {
             capeTiles[i].GetNewItem(currentInventory.capeItems[i]);
-            capeTiles[i].UpdateAppearance();
+            bool isActive = currentInventory.capeItems[i] == currentInventory.activeCape;
+            capeTiles[i].UpdateAppearance(isActive);
         }
 
         for(int j = 0; j < collectableTiles.Length; j++) {
@@ -81,5 +94,45 @@ public class CharacterMenuManager : MonoBehaviour
     private void UpdateSelectorPosition() {
         Vector3 newPosition = capeTiles[currentHoverIndex].transform.position;
         selectorObject.transform.position = newPosition;
+        descriptionManager.UpdateTexts(dataManager.GetInventory().capeItems[currentHoverIndex]);
+    }
+
+    private void OnInteract() {
+        Inventory currentInventory = dataManager.GetInventory();
+
+        Item capeRef = currentInventory.capeItems[currentHoverIndex];
+
+        if(capeRef.isUnlocked) {
+            Debug.Log("Updated Cape");
+            bool applyEffect = dataManager.UpdateActiveCape(capeRef);
+            if(applyEffect) {
+                if(capeRef.capeGlowType == GlowEffectManager.GlowType.Null) {
+                    dataManager.gameObject.GetComponentInChildren<GlowEffectManager>().ResetToDefaultValues();
+                }
+                else {
+                    dataManager.gameObject.GetComponentInChildren<GlowEffectManager>().ApplyCapeEffect(capeRef.capeGlowType);
+                }
+            }
+        }
+        else if (!capeRef.isUnlocked){
+            Item newCapeRef = TryBuyCape(capeRef, out currentInventory);
+            currentInventory.capeItems[currentHoverIndex] = newCapeRef;
+            dataManager.UpdateInventory(currentInventory);
+        }
+    }
+
+    private Item TryBuyCape(Item capeRef, out Inventory currentInventory) {
+        currentInventory = dataManager.GetInventory();
+        for(int i = 0; i < capeRef.buyRequirements.Length; i++) {
+            if(!(currentInventory.consumableItems[i].itemQuantity >= capeRef.buyRequirements[i])) {
+                return capeRef;
+            }
+        }
+        capeRef.isUnlocked = true;
+        
+        for(int j = 0; j < capeRef.buyRequirements.Length; j++) {
+            currentInventory.consumableItems[j].itemQuantity -= capeRef.buyRequirements[j];
+        }
+        return capeRef;
     }
 }

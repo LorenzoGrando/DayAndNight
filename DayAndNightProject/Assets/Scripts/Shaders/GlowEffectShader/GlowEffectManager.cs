@@ -27,6 +27,8 @@ public class GlowEffectManager : MonoBehaviour
     private float currentTargetScale;
     Sequence currentTweenSequence;
     private bool isActive = false;
+    private float[] defaultMaskSize;
+    private float defaultFadeOutDelay;
 
     [System.Serializable]
     public class MaskData {
@@ -57,6 +59,10 @@ public class GlowEffectManager : MonoBehaviour
             GetComponentInChildren<MeshRenderer>().material = effectMat;
         }
         thisGlowType = GlowType.Null;
+        defaultMaskSize = new float[2];
+        defaultMaskSize[0] = sunMaskData.targetScaleSize;
+        defaultMaskSize[1] = moonMaskData.targetScaleSize;
+        defaultFadeOutDelay = delayBeforeFadeOut;
     }
     void Update()
     {
@@ -121,5 +127,36 @@ public class GlowEffectManager : MonoBehaviour
 
     public GlowType GetGlowType() {
         return thisGlowType;
+    }
+
+    public void ApplyCapeEffect(GlowType glow) {
+        ResetToDefaultValues();
+        Debug.Log(nameof(glow));
+
+        switch(glow) {
+            case GlowType.Sun:
+                sunMaskData.targetScaleSize = defaultMaskSize[0] + 0.5f;
+                moonMaskData.targetScaleSize = defaultMaskSize[1] + 0.5f;
+                delayBeforeFadeOut = defaultFadeOutDelay;
+            break;
+            case GlowType.Moon:
+                sunMaskData.targetScaleSize = defaultMaskSize[0];
+                moonMaskData.targetScaleSize = defaultMaskSize[1];
+                delayBeforeFadeOut = defaultFadeOutDelay + 2.5f;
+            break;
+            case GlowType.Twilight:
+                sunMaskData.targetScaleSize = defaultMaskSize[0];
+                moonMaskData.targetScaleSize = defaultMaskSize[1];
+                delayBeforeFadeOut = defaultFadeOutDelay - 3f;
+            break;
+        }
+
+    }
+
+    public void ResetToDefaultValues() {
+        Debug.Log("Reset Values");
+        sunMaskData.targetScaleSize = defaultMaskSize[0];
+        moonMaskData.targetScaleSize = defaultMaskSize[1];
+        delayBeforeFadeOut = defaultFadeOutDelay;
     }
 }

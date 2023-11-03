@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Unity Methods
-    private void Start()
+    private void OnEnable()
     {
         if(_controller == null) {
             _controller = GetComponent<Controller2D>();
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
         _minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(_gravity) * minJumpHeight);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if(_controller.Collisions.above || _controller.Collisions.below) {
             _velocity.y = 0;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Item")]
+[System.Serializable]
 public class Item : ScriptableObject
 {
     public enum ItemStorageType {Quantity, Unlockable};
@@ -17,4 +18,7 @@ public class Item : ScriptableObject
     public string itemThemeDescription;
     public string itemFunctionalitDescription;
     public Sprite itemSprite;
+
+    public GlowEffectManager.GlowType capeGlowType;
+    public float[] buyRequirements;
 }

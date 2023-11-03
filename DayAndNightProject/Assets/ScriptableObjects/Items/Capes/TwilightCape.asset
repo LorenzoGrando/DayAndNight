@@ -17,7 +17,12 @@ MonoBehaviour:
   consumableType: 0
   itemQuantity: 0
   isUnlocked: 0
-  itemName: 
-  itemThemeDescription: 
-  itemFunctionalitDescription: 
+  itemName: Twilight Cape
+  itemThemeDescription: The Eclipse; Seen as rarely on the sky as those who choose
+    to follow its path.
+  itemFunctionalitDescription: Reduces Glow duration, but greatly reduces Glow cooldown.
   itemSprite: {fileID: 0}
+  capeGlowType: 3
+  buyRequirements:
+  - 3
+  - 3

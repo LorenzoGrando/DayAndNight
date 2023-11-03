@@ -7,6 +7,8 @@ public class PlayerInput : MonoBehaviour
 {
     private Player _player;
     private CharacterMenuManager _characterMenuManager;
+    private MainMenuManager _mainMenuManager;
+    private InGameMenuManager _inGameMenuManager;
     [SerializeField]
     private PlayerInteractor interactor;
     private GlowEffectManager _glowEffectManager;
@@ -18,6 +20,8 @@ public class PlayerInput : MonoBehaviour
     {
         _player = GetComponent<Player>();
         _characterMenuManager = FindObjectOfType<CharacterMenuManager>();
+        _mainMenuManager = FindObjectOfType<MainMenuManager>();
+        _inGameMenuManager = FindObjectOfType<InGameMenuManager>();
         if(transform.childCount > 0) {
             _glowEffectManager = GetComponentInChildren<GlowEffectManager>();
         }
@@ -27,7 +31,7 @@ public class PlayerInput : MonoBehaviour
             inputActions.Enable();
         }
 
-        activeInputMap = InputMaps.Gameplay;
+        activeInputMap = InputMaps.UI;
     }
 
     void OnDisable()
@@ -51,12 +55,19 @@ public class PlayerInput : MonoBehaviour
         float inputX = inputActions.Gameplay.Move.ReadValue<Vector2>().x;
         float jumpInput = inputActions.Gameplay.Jump.ReadValue<float>();
         float interactInput = inputActions.Gameplay.Interact.triggered ? 1 : 0;
+        float escapeInput = inputActions.Gameplay.InGameMenu.triggered ? 1 : 0;
         float sunAuraEffectInput = inputActions.Gameplay.SunGlowAction.ReadValue<float>();
         float moonAuraEffectInput = inputActions.Gameplay.MoonGlowAction.ReadValue<float>();
         float characterMenuInput = inputActions.Gameplay.CharacterMenu.triggered ? 1 : 0;
 
         if(characterMenuInput != 0) {
             _characterMenuManager.EnableMenu();
+            UpdateActiveActionMap(InputMaps.UI);
+            return;
+        }
+
+        if(escapeInput != 0) {
+            _inGameMenuManager.EnableMenu();
             UpdateActiveActionMap(InputMaps.UI);
             return;
         }
@@ -79,6 +90,14 @@ public class PlayerInput : MonoBehaviour
                     return;
                 }
             }
+            else {
+                if(sunAuraEffectInput > 0 && _glowEffectManager != null) {
+                    _glowEffectManager.StartGlow(GlowEffectManager.GlowType.Sun, true);
+                }
+                if(moonAuraEffectInput > 0 && _glowEffectManager != null) {
+                    _glowEffectManager.StartGlow(GlowEffectManager.GlowType.Moon, true);
+                }
+            }
         }
         else {
             if(sunAuraEffectInput > 0 && _glowEffectManager != null) {
@@ -97,6 +116,8 @@ public class PlayerInput : MonoBehaviour
         float characterMenuInput = inputActions.UI.CharacterMenu.triggered ? 1 : 0;
 
         _characterMenuManager.InputUpdate(directionalInput, interactInput, escapeInput, characterMenuInput);
+        _mainMenuManager.InputUpdate(directionalInput, interactInput, escapeInput);
+        _inGameMenuManager.InputUpdate(directionalInput, interactInput, escapeInput);
     }
 
     public void UpdateActiveActionMap(InputMaps newActiveMap) {
