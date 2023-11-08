@@ -54,12 +54,18 @@ public class PlayerDataManager : MonoBehaviour {
     public void UpdatePlayerData(PlayerData newData) {
         currentPlayerData.currentHeldSphere = newData.currentHeldSphere;
         ResetInventory();
-        PerformLoadInventoryData(newData.currentInventory);
+        PerformLoadInventoryData(newData.inventorySaveData);
         UpdateInventory(currentPlayerData.currentInventory);
         UpdateActiveCape(currentPlayerData.currentInventory.activeCape);
+        gameObject.GetComponentInChildren<GlowEffectManager>().ApplyCapeEffect(currentPlayerData.currentInventory.activeCape.capeGlowType);
     }
 
-    private void PerformLoadInventoryData(Inventory inventoryToLoad) {
+    public PlayerData GetPlayerData() {
+        currentPlayerData.inventorySaveData = currentPlayerData.currentInventory.ReturnCurrentInventoryData();
+        return currentPlayerData;
+    }
+
+    private void PerformLoadInventoryData(InventorySaveData inventoryToLoad) {
         currentPlayerData.currentInventory.UpdateInventoryData(inventoryToLoad);
     }
  }
@@ -69,6 +75,7 @@ public class PlayerData {
     public CrystalSphere currentHeldSphere;
     [SerializeField]
     public Inventory currentInventory = new Inventory();
+    public InventorySaveData inventorySaveData = new InventorySaveData();
 
     public PlayerData() {
         currentHeldSphere = null;

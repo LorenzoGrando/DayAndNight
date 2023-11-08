@@ -12,6 +12,7 @@ public class MainMenuManager : MonoBehaviour
     private GameObject canvasEnablerObject;
     [SerializeField]
     private GameObject[] buttonTiles;
+    private GameObject[] optionsOptions;
     private GameObject[] conflictOptions;
     [SerializeField]
     private GameObject[] extraWindowTiles;
@@ -31,7 +32,13 @@ public class MainMenuManager : MonoBehaviour
         Options,
         Conflict
     };
+
+    private enum ConflictType {
+        Default,
+        Sprite
+    };
     private ActiveSelector activeSelector;
+    private ConflictType activeConflictType;
 
 
 
@@ -62,8 +69,14 @@ public class MainMenuManager : MonoBehaviour
 
     public void DisableMenu() {
         canvasEnablerObject.SetActive(false);
-        FindObjectOfType<PlayerInput>().UpdateActiveActionMap(PlayerInput.InputMaps.Gameplay);
         fadeOutScreen.SetTrigger("PlayFadeOut");
+    }
+
+    private void ChangeDefaultMenuVisibility(bool isVisible) {
+        foreach(GameObject menuObject in buttonTiles) {
+            menuObject.SetActive(isVisible);
+        }
+        mainSelectorObject.SetActive(isVisible);
     }
 
     public void InputUpdate(float directional, float interact, float escape) {
@@ -81,7 +94,7 @@ public class MainMenuManager : MonoBehaviour
                             maxInput = buttonTiles.Length;
                         break;
                         case ActiveSelector.Options:
-                            maxInput = buttonTiles.Length;
+                            maxInput = optionsOptions.Length;
                         break;
                         case ActiveSelector.Conflict:
                             maxInput = conflictOptions.Length;
@@ -104,7 +117,7 @@ public class MainMenuManager : MonoBehaviour
                 UpdateSelectorPosition(buttonTiles);
             }
             else if (activeSelector == ActiveSelector.Options) {
-                UpdateSelectorPosition(buttonTiles);
+                UpdateSelectorPosition(optionsOptions);
             }
             else if (activeSelector == ActiveSelector.Conflict) {
                 UpdateSelectorPosition(conflictOptions);
@@ -127,7 +140,7 @@ public class MainMenuManager : MonoBehaviour
                     bool isDefaultFile;
                     SaveData saveData = SaveLoadSystem.GetCurrentSave(out isDefaultFile);
                     if(isDefaultFile) {
-                        OnNewGame();
+                        OpenChooseSprite();
                     }
                     else {
                         OpenStartNewGameConflict();
@@ -149,14 +162,27 @@ public class MainMenuManager : MonoBehaviour
             }
         }
         else if(activeSelector == ActiveSelector.Options) {
-
+            CloseAllExtraWindows();
         }
         else if (activeSelector == ActiveSelector.Conflict) {
-            if(currentHoverIndex == 0) {
-                OnNewGame();
-            }
-            else {
-                CloseAllExtraWindows();
+            switch(activeConflictType) {
+                case ConflictType.Default:
+                    if(currentHoverIndex == 0) {
+                        CloseAllExtraWindows();
+                        OpenChooseSprite();
+                    }
+                    else {
+                        CloseAllExtraWindows();
+                    }
+                break;
+                case ConflictType.Sprite:
+                    if(currentHoverIndex == 0) {
+                        OnNewGame(0);
+                    }
+                    else {
+                        OnNewGame(1);
+                    }
+                break;
             }
         }
     }
@@ -169,12 +195,16 @@ public class MainMenuManager : MonoBehaviour
 
     private void StartGame() {
         fadeOutScreen.SetTrigger("PlayFadeIn");
+        FindObjectOfType<PlayerInput>().UpdateActiveActionMap(PlayerInput.InputMaps.Gameplay);
         MethodToCallback callback = DisableMenu;
         StartCoroutine(routine:DelayCallbackBySeconds(2.75f, callback));
     }
 
-    private void OnNewGame() {
+    private void OnNewGame(int spriteChoice) {
         SaveLoadSystem.CreateDefaultSave(true);
+        SaveData saveData = SaveLoadSystem.GetCurrentSave(out bool isDefault);
+        saveData.thisGameSpriteChoice = (SaveData.PlayerSpriteChoice) spriteChoice;
+        SaveLoadSystem.Save(false, saveData);
         StartGame();
     }
 
@@ -184,24 +214,53 @@ public class MainMenuManager : MonoBehaviour
     }
 
     private void OpenOptions() {
+        ChangeDefaultMenuVisibility(false);
         extraWindowTiles[0].SetActive(true);
         currentHoverIndex = 0;
+        optionsSelectorObject.gameObject.SetActive(true);
         activeSelectorObject = optionsSelectorObject;
         activeSelector = ActiveSelector.Options;
-        UpdateSelectorPosition(buttonTiles);
+
+        if(optionsOptions == null) {
+            GameObject[] options = new GameObject[1];
+            options[0] = extraWindowTiles[0].transform.GetChild(0).gameObject;
+            optionsOptions = options;
+        }
+        
+
+        UpdateSelectorPosition(optionsOptions);
     }
 
-    private void OpenLoadConflict() {
+    private void OpenChooseSprite() {
+        ChangeDefaultMenuVisibility(false);
+        extraWindowTiles[2].SetActive(true);
+        currentHoverIndex = 0;
+        conflictSelectorObject.SetActive(true);
 
+        activeSelectorObject = conflictSelectorObject;
+        activeSelector = ActiveSelector.Conflict;
+        activeConflictType = ConflictType.Sprite;
+
+        if(conflictOptions == null) {
+            GameObject holderRef = extraWindowTiles[2].transform.GetChild(0).gameObject;
+            GameObject[] options = new GameObject[holderRef.transform.childCount];
+            for(int i = 0; i < holderRef.transform.childCount; i++) {
+                options[i] = holderRef.transform.GetChild(i).gameObject;
+            }
+            conflictOptions = options;
+        }
+        UpdateSelectorPosition(conflictOptions);
     }
 
     private void OpenStartNewGameConflict() {
+        ChangeDefaultMenuVisibility(false);
         extraWindowTiles[1].SetActive(true);
         currentHoverIndex = 0;
-        optionsSelectorObject.SetActive(true);
+        conflictSelectorObject.SetActive(true);
 
-        activeSelectorObject = optionsSelectorObject;
+        activeSelectorObject = conflictSelectorObject;
         activeSelector = ActiveSelector.Conflict;
+        activeConflictType = ConflictType.Default;
 
         if(conflictOptions == null) {
             GameObject holderRef = extraWindowTiles[1].transform.GetChild(0).gameObject;
@@ -220,6 +279,7 @@ public class MainMenuManager : MonoBehaviour
         }
         optionsSelectorObject.SetActive(false);
         conflictSelectorObject.SetActive(false);
+        ChangeDefaultMenuVisibility(true);
         activeSelectorObject = mainSelectorObject;
         activeSelector = ActiveSelector.Main;
         currentHoverIndex = 0;

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SaveLoadObject : MonoBehaviour
@@ -14,8 +15,11 @@ public class SaveLoadObject : MonoBehaviour
         }
     }
     private void SaveGame(){
-        SaveData newSaveData = new SaveData(gameObject.transform.position, this, FindObjectOfType<PlayerDataManager>().currentPlayerData,
-                            FindObjectOfType<ShrineLoader>().shrineSaveData, FindObjectOfType<ConsumableLoader>().GetData(), false);
+        SaveData newSaveData = new SaveData(gameObject.transform.position, 
+            this, FindObjectOfType<PlayerDataManager>().GetPlayerData(),
+                FindObjectOfType<ShrineLoader>().shrineSaveData, 
+                    FindObjectOfType<ConsumableLoader>().GetData(), 
+                        (SaveData.PlayerSpriteChoice)FindObjectOfType<PlayerAnimationManager>().activePlayerSprite, false);
 
         SaveLoadSystem.Save(false, newSaveData);
         Debug.Log("Saved on new Checkpoint");

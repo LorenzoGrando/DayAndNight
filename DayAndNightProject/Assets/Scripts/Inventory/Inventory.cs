@@ -23,46 +23,41 @@ public class Inventory
         }
     }
 
-    public void UpdateInventoryData(Inventory inventoryToCopy) {
+    public void UpdateInventoryData(InventorySaveData inventoryToCopy) {
         for(int i = 0; i < consumableItems.Length; i++) {
-            consumableItems[i].itemStorageType = inventoryToCopy.consumableItems[i].itemStorageType;
-            consumableItems[i].itemType = inventoryToCopy.consumableItems[i].itemType;
-            consumableItems[i].consumableType = inventoryToCopy.consumableItems[i].consumableType;
-            consumableItems[i].itemQuantity = inventoryToCopy.consumableItems[i].itemQuantity;
-            consumableItems[i].isUnlocked = inventoryToCopy.consumableItems[i].isUnlocked;
-            consumableItems[i].itemName = inventoryToCopy.consumableItems[i].itemName;
-            consumableItems[i].itemThemeDescription = inventoryToCopy.consumableItems[i].itemThemeDescription;
-            consumableItems[i].itemFunctionalitDescription = inventoryToCopy.consumableItems[i].itemFunctionalitDescription;
-            consumableItems[i].itemSprite = inventoryToCopy.consumableItems[i].itemSprite;
-            consumableItems[i].capeGlowType = inventoryToCopy.consumableItems[i].capeGlowType;
-            for(int j = 0; j < consumableItems[i].buyRequirements.Length; j++) {
-                consumableItems[i].buyRequirements[j] = inventoryToCopy.consumableItems[i].buyRequirements[j];
-            }
+            consumableItems[i].itemQuantity = inventoryToCopy.consumableQuantities[i];
         }
 
         for(int c = 0; c < capeItems.Length; c++) {
-            capeItems[c].itemStorageType = inventoryToCopy.capeItems[c].itemStorageType;
-            capeItems[c].itemType = inventoryToCopy.capeItems[c].itemType;
-            capeItems[c].consumableType = inventoryToCopy.capeItems[c].consumableType;
-            capeItems[c].itemQuantity = inventoryToCopy.capeItems[c].itemQuantity;
-            capeItems[c].isUnlocked = inventoryToCopy.capeItems[c].isUnlocked;
-            capeItems[c].itemName = inventoryToCopy.capeItems[c].itemName;
-            capeItems[c].itemThemeDescription = inventoryToCopy.capeItems[c].itemThemeDescription;
-            capeItems[c].itemFunctionalitDescription = inventoryToCopy.capeItems[c].itemFunctionalitDescription;
-            capeItems[c].itemSprite = inventoryToCopy.capeItems[c].itemSprite;
-            capeItems[c].capeGlowType = inventoryToCopy.capeItems[c].capeGlowType;
-            for(int v = 0; v < capeItems[c].buyRequirements.Length; v++) {
-                capeItems[c].buyRequirements[v] = inventoryToCopy.capeItems[c].buyRequirements[v];
-            }
+            capeItems[c].isUnlocked = inventoryToCopy.capesUnlockStatus[c];
         }
-        int activeCapeIndex = 0;
-        for(int a = 0; a < inventoryToCopy.capeItems.Length; a++) {
-            if(inventoryToCopy.capeItems[a] == inventoryToCopy.activeCape) {
-                activeCapeIndex = a;
-                break;
+        activeCape = capeItems[inventoryToCopy.activeCapeIndexValue];
+    }
+
+    public InventorySaveData ReturnCurrentInventoryData() {
+        InventorySaveData inventorySaveData = new InventorySaveData();
+        inventorySaveData.consumableQuantities = new float[2];
+        inventorySaveData.capesUnlockStatus = new bool[4];
+
+        for(int s = 0; s < inventorySaveData.capesUnlockStatus.Length; s++) {
+            if(s < 2) {
+                inventorySaveData.consumableQuantities[s] = consumableItems[s].itemQuantity;
+            }
+
+            inventorySaveData.capesUnlockStatus[s] = capeItems[s].isUnlocked;
+
+            if(activeCape == capeItems[s]) {
+                inventorySaveData.activeCapeIndexValue = s;
             }
         }
 
-        activeCape = capeItems[activeCapeIndex];
+        return inventorySaveData;
     }
+}
+
+[System.Serializable]
+public class InventorySaveData {
+    public float[] consumableQuantities;
+    public bool[] capesUnlockStatus;
+    public int activeCapeIndexValue;
 }

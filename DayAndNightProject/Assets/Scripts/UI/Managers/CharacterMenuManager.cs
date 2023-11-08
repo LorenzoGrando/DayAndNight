@@ -103,7 +103,6 @@ public class CharacterMenuManager : MonoBehaviour
         Item capeRef = currentInventory.capeItems[currentHoverIndex];
 
         if(capeRef.isUnlocked) {
-            Debug.Log("Updated Cape");
             bool applyEffect = dataManager.UpdateActiveCape(capeRef);
             if(applyEffect) {
                 if(capeRef.capeGlowType == GlowEffectManager.GlowType.Null) {

@@ -9,6 +9,7 @@ public class PlayerAnimationManager : MonoBehaviour
     [SerializeField]
     private float faceRightOffsetValue;
     private Player _player;
+    public int activePlayerSprite = 0;
 
     void OnEnable()
     {
@@ -38,5 +39,22 @@ public class PlayerAnimationManager : MonoBehaviour
                 childObject.transform.localPosition = transform;
             }
          }
+    }
+
+    public void UpdateActiveSprite(SaveData saveData) {
+        activePlayerSprite = (int)saveData.thisGameSpriteChoice;
+
+        if(spritePartParents[0].transform.childCount > 0) {
+            switch(activePlayerSprite) {
+                case 0:
+                    spritePartParents[0].transform.GetChild(0).gameObject.SetActive(true);
+                    spritePartParents[0].transform.GetChild(1).gameObject.SetActive(false);
+                break;
+                case 1:
+                    spritePartParents[0].transform.GetChild(0).gameObject.SetActive(false);
+                    spritePartParents[0].transform.GetChild(1).gameObject.SetActive(true);
+                break;
+            }
+        }
     }
 }

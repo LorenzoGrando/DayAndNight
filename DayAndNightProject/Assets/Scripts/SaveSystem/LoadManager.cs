@@ -8,15 +8,19 @@ public class LoadManager : MonoBehaviour
     ShrineLoader shrineLoader;
     PlayerDataManager dataManager;
     ConsumableLoader consumableLoader;
+    PlayerAnimationManager animManager;
 
     void OnEnable()
     {
         playerRef ??= FindObjectOfType<Player>();
         shrineLoader ??= FindObjectOfType<ShrineLoader>();
         dataManager ??= FindObjectOfType<PlayerDataManager>();
-        consumableLoader ??= FindObjectOfType<ConsumableLoader>(); 
+        consumableLoader ??= FindObjectOfType<ConsumableLoader>();
+        animManager ??= FindObjectOfType<PlayerAnimationManager>();
         SaveLoadSystem.OnLoadGame += PerformLoadGame;
         SaveLoadSystem.OnSaveGame += OnNewGameLoad;
+        
+        Cursor.visible = false;
     }
 
     void OnDisable()
@@ -30,12 +34,14 @@ public class LoadManager : MonoBehaviour
         playerRef ??= FindObjectOfType<Player>();
         shrineLoader ??= FindObjectOfType<ShrineLoader>();
         dataManager ??= FindObjectOfType<PlayerDataManager>();
-        consumableLoader ??= FindObjectOfType<ConsumableLoader>(); 
+        consumableLoader ??= FindObjectOfType<ConsumableLoader>();
+        animManager ??= FindObjectOfType<PlayerAnimationManager>();
 
 
         dataManager.UpdatePlayerData(loadData.savedPlayerData);
         shrineLoader.OnLoad(loadData.savedShrineData);
         consumableLoader.OnGameLoad(loadData);
+        animManager.UpdateActiveSprite(loadData);
 
         UpdatePlayerToLoad(loadData);
     }
@@ -46,10 +52,11 @@ public class LoadManager : MonoBehaviour
             shrineLoader ??= FindObjectOfType<ShrineLoader>();
             dataManager ??= FindObjectOfType<PlayerDataManager>();
             consumableLoader ??= FindObjectOfType<ConsumableLoader>(); 
-
+            animManager ??= FindObjectOfType<PlayerAnimationManager>();
 
             dataManager.ResetInventory();
             FindObjectOfType<PlayerSpawnManager>().EnableSpawnCheckpoint(loadData);
+            animManager.UpdateActiveSprite(loadData);
         }
     }
     void UpdatePlayerToLoad(SaveData loadData) {
