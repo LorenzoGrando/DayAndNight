@@ -72,20 +72,17 @@ public class PlatformManager : MonoBehaviour
         }
     }
     public void UpdatePlatformStatus(bool newStatus) {
-        if(platformObject.activeSelf != newStatus) {
-            platformObject.SetActive(newStatus);
-            if(newStatus) {
-                platformObject.layer = LayerMask.NameToLayer("Active Platforms");
-            }
-            else {
-                platformObject.layer = LayerMask.NameToLayer("Disabled Platforms");
-            }
+        platformObject.SetActive(newStatus);
+        if(newStatus) {
+            platformObject.layer = LayerMask.NameToLayer("Active Platforms");
+        }
+        else {
+            platformObject.layer = LayerMask.NameToLayer("Disabled Platforms");
         }
     }
 
     public void UpdatePlatformCollider(bool newStatus) {
         platformObject.GetComponent<BoxCollider2D>().enabled = newStatus;
-
     }
 
     private void OnEnterGlowBehaviour(GlowEffectManager.GlowType colliderGlowType) {
