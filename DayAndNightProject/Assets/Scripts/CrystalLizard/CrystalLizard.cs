@@ -167,7 +167,6 @@ public class CrystalLizard : MonoBehaviour {
     }
 
     private void UpdateDirection(float direction) {
-        
         bool isFaceLeft = direction < 0;
         bool isMaintainSide = direction == 0;
         Debug.Log(direction);
