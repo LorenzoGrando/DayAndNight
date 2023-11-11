@@ -12,6 +12,7 @@ public class PlatformManager : MonoBehaviour
     [SerializeField]
     private PlatformData thisPlatformData;
     private GameObject sunSpriteObject;
+    private Collider2D sunSpriteObjectCollider;
 
     private float _timeSinceLastCollisionWithGlow;
     private float _intervalToWait = 5;

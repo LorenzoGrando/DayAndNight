@@ -43,6 +43,7 @@ public class GlowEffectManager : MonoBehaviour
         public int waveAmount;
         public float outlineWidth;
         public Color temporaryOverlayColor;
+        public Texture2D glowTexture;
     }
     void Awake()
     {
@@ -87,6 +88,7 @@ public class GlowEffectManager : MonoBehaviour
         effectMat.SetInt("_WaveAmount", currentMaskData.waveAmount);
         effectMat.SetFloat("_OutlineWidth", currentMaskData.outlineWidth);
         effectMat.SetColor("_TemporaryColor", currentMaskData.temporaryOverlayColor);
+        effectMat.SetTexture("_BaseMap", currentMaskData.glowTexture);
     }
 
     public void StartGlow(GlowType glowType, bool fadeOut) {
