@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShrineBackgroundManager : MonoBehaviour
 {
     [SerializeField]
-    SpriteRenderer backgroundArea;
+    MeshRenderer[] backgroundArea;
     [SerializeField]
     MeshRenderer leftTransitionArea;
     [SerializeField]
@@ -16,9 +16,17 @@ public class ShrineBackgroundManager : MonoBehaviour
     [SerializeField]
     private Texture2D[] transitionTextures;
 
-    public void EnableBackground() {
-        backgroundArea.gameObject.SetActive(true);
-        backgroundArea.gameObject.SetActive(true);
+    public void OnEnable() {
+        foreach(MeshRenderer bg in backgroundArea) {
+            Material newInstancedMaterial = Instantiate(bg.material);
+            bg.material = newInstancedMaterial;
+        }
+        
+        Material leftMat = Instantiate(leftTransitionArea.material);
+        leftTransitionArea.material = leftMat;
+
+        Material rightMat = Instantiate(rightTransitionArea.material);
+        rightTransitionArea.material = rightMat;
     }
 
     public void ChangeBackgroundType(GlowEffectManager.GlowType newType) {
@@ -27,13 +35,23 @@ public class ShrineBackgroundManager : MonoBehaviour
     }
 
     private void UpdateBackgrounds() {
+        Debug.Log("CalledUpdate");
         switch(thisBackgroundType) {
             case GlowEffectManager.GlowType.Sun:
-                backgroundArea.sprite = backgroundSprites[0];
+                foreach(MeshRenderer bg in backgroundArea) {
+                    Material materialtest = bg.material;
+                    materialtest.SetTexture("_RightTexture", transitionTextures[0]);
+                    materialtest.SetTexture("_LeftTexture", transitionTextures[0]);
+                }
+                
 
             break;
             case GlowEffectManager.GlowType.Moon:
-                backgroundArea.sprite = backgroundSprites[1];
+                foreach(MeshRenderer bg2 in backgroundArea) {
+                    Material material2 = bg2.material;
+                    material2.SetTexture("_RightTexture", transitionTextures[0]);
+                    material2.SetTexture("_LeftTexture", transitionTextures[0]);
+                }
             break;
         }
 
@@ -45,12 +63,12 @@ public class ShrineBackgroundManager : MonoBehaviour
 
         if(leftTransitionArea != null) {
             Material material = leftTransitionArea.material;
-            material.SetTexture("RightTex", transitionTextures[index]);
+            material.SetTexture("_RightTexture", transitionTextures[index]);
         }
 
         if(rightTransitionArea != null) {
-            Material material = leftTransitionArea.material;
-            material.SetTexture("LeftTex", transitionTextures[index]);
+            Material material = rightTransitionArea.material;
+            material.SetTexture("_LeftTexture", transitionTextures[index]);
         }
     }
 }

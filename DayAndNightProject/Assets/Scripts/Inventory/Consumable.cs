@@ -2,17 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
 public class Consumable : MonoBehaviour
 {
     public Item thisConsumableType;
     public bool wasCollected;
-    private SpriteRenderer spriteRenderer;
-
     void Awake()
     {
         wasCollected = false;
-        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void OnCollisionEnter2D(Collision2D other)
@@ -30,7 +26,6 @@ public class Consumable : MonoBehaviour
 
     public void UpdateItem(Item newItem) {
         thisConsumableType = newItem;
-        spriteRenderer.sprite = newItem.itemSprite;
         gameObject.name = newItem.name;
     }
 

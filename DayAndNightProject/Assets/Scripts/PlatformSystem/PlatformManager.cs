@@ -6,30 +6,40 @@ using UnityEngine;
 public class PlatformManager : MonoBehaviour
 {
     [SerializeField]
+    private bool printDebugStatus;
+    [SerializeField]
     private GameObject platformObject;
     [SerializeField]
     private PlatformData thisPlatformData;
     private GameObject sunSpriteObject;
+    private Collider2D sunSpriteObjectCollider;
+
+    private float _timeSinceLastCollisionWithGlow;
+    private float _intervalToWait = 5;
+    [SerializeField]
+    private bool _isActivelyColliding;
 
     private GlowEffectManager _lastGlowEffectInteracted;
     private GlowEffectManager _lastPlayerGlowEffectInteracted = null;
 
     void Start()
     {
-        if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Sun) {
-            UpdatePlatformCollider(true);
-            platformObject.layer = LayerMask.NameToLayer("Active Platforms");
-            sunSpriteObject = platformObject.transform.GetChild(0).gameObject;
-        }
-        if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Moon) {
-            UpdatePlatformStatus(false);
-            platformObject.layer = LayerMask.NameToLayer("Disabled Platforms");
+        ResetPlatformsToDefaultState();
+    }
+
+    void Update()
+    {
+        if(_timeSinceLastCollisionWithGlow + _intervalToWait < Time.time && !_isActivelyColliding) {
+            _timeSinceLastCollisionWithGlow = Time.time;
+            ResetPlatformsToDefaultState();
         }
     }
     void OnTriggerEnter2D(Collider2D other)
     {
         GlowEffectManager.GlowType colliderGlowType;
         if(other.gameObject.CompareTag("GlowEffect")) {
+            _isActivelyColliding = true;
+            _timeSinceLastCollisionWithGlow = Time.time;
             if(other.transform.parent.gameObject.CompareTag("Player")) {
                 _lastPlayerGlowEffectInteracted = other.GetComponentInParent<GlowEffectManager>();
                 colliderGlowType = _lastPlayerGlowEffectInteracted.GetGlowType();
@@ -100,6 +110,7 @@ public class PlatformManager : MonoBehaviour
     }
 
     private void OnExitGlowBehaviour() {
+        _isActivelyColliding = false;
         if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Sun) {
             UpdatePlatformCollider(true);
             sunSpriteObject.SetActive(true);
@@ -107,6 +118,21 @@ public class PlatformManager : MonoBehaviour
         }
         if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Moon) {
             UpdatePlatformStatus(false);
+        }
+    }
+
+    private void ResetPlatformsToDefaultState() {
+        if(printDebugStatus) {
+            Debug.Log("Reset Platform to Default");
+        }
+        if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Sun) {
+            UpdatePlatformCollider(true);
+            platformObject.layer = LayerMask.NameToLayer("Active Platforms");
+            sunSpriteObject = platformObject.transform.GetChild(0).gameObject;
+        }
+        if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Moon) {
+            UpdatePlatformStatus(false);
+            platformObject.layer = LayerMask.NameToLayer("Disabled Platforms");
         }
     }
 }

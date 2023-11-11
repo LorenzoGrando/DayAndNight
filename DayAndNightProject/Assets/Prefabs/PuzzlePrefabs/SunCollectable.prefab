@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 3775174492316901712}
   - component: {fileID: 3005262523692450508}
   - component: {fileID: 6005543408652050509}
-  - component: {fileID: 5417268101205621482}
+  - component: {fileID: 7671576158752204474}
   m_Layer: 0
-  m_Name: MoonCollectable
+  m_Name: SunCollectable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f4f3f99966ec5948b0a18f551dcb013, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thisConsumableType: {fileID: 11400000, guid: decd0c2037e05ef49a9fb6c82ea1a473, type: 2}
+  thisConsumableType: {fileID: 11400000, guid: c626b21e512e0d3498bd49b0dffa9cc2, type: 2}
   wasCollected: 0
 --- !u!61 &6005543408652050509
 BoxCollider2D:
@@ -95,7 +95,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!95 &5417268101205621482
+--- !u!95 &7671576158752204474
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -105,7 +105,7 @@ Animator:
   m_GameObject: {fileID: 1288237806395487682}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 62ccade9b6bbb9341a9e9de3e75b4a62, type: 2}
+  m_Controller: {fileID: 9100000, guid: 048378eddca88df4d9c0fd6171a79a50, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -189,7 +189,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 28dc9523e1c479d488cd24ffc3812bf5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 072c37fe4f5f8d34f85c5afe616770af, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -273,7 +273,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: cfa3a0b18fe197f4d9b6023b89061805, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d2afd7eac7cb6cf49bb25318a19016e0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

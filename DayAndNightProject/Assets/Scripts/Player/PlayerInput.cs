@@ -76,7 +76,6 @@ public class PlayerInput : MonoBehaviour
         _player.SetJumpInput(jumpInput);
         interactor.SetInteractionValue(interactInput);
 
-        Debug.Log(interactor._lastKnownInteractable != null);
         if(interactor._lastKnownInteractable != null) {
             if(interactor._lastKnownInteractable.GetType() == typeof(SphereTotemManager)) {
                 SphereTotemManager totemRef = interactor._lastKnownInteractable as SphereTotemManager;

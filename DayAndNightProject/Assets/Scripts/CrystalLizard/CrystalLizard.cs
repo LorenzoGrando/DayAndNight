@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Controller2D))]
 public class CrystalLizard : MonoBehaviour {
     private Controller2D _controller;
+    private Animator _animator;
+    private SpriteRenderer _renderer;
     [SerializeField]
     [Tooltip("State Machine")]
     public StateMachine behaviourStateMachine = null;
@@ -23,6 +25,8 @@ public class CrystalLizard : MonoBehaviour {
     {
         behaviourStateMachine ??= new StateMachine();
         _controller = _controller != null ? _controller : GetComponent<Controller2D>();
+        _animator = GetComponentInChildren<Animator>();
+        _renderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     void Update()
@@ -139,6 +143,8 @@ public class CrystalLizard : MonoBehaviour {
     }
 
     private void IdleBehaviour() {
+        UpdateDirection(0);
+        _animator.SetBool("Walking", false);
         if(Time.time > _lastTimeActive + _sleepDelay) {
             behaviourStateMachine.DirectlyChangeState(StateMachine.State.Sleeping);
         }
@@ -151,11 +157,23 @@ public class CrystalLizard : MonoBehaviour {
     void MoveLizard(float xDirection, float optionalSpeed = 0, bool useOptionalSpeed = false) {
         float finalSpeed = useOptionalSpeed ? optionalSpeed : speed;
         _velocity.x = xDirection * finalSpeed;
+        UpdateDirection(xDirection);
+        _animator.SetBool("Walking", true);
         _controller.Move(_velocity * Time.deltaTime);
     }
 
     public Vector2 GetVelocity() {
         return _velocity;
+    }
+
+    private void UpdateDirection(float direction) {
+        bool isFaceLeft = direction < 0;
+        bool isMaintainSide = direction == 0;
+        Debug.Log(direction);
+        Debug.Log(isFaceLeft);
+        if(!isMaintainSide) {
+            _renderer.flipX = isFaceLeft;
+        }
     }
 
     #endregion
