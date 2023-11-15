@@ -22,6 +22,7 @@ public class SaveLoadObject : MonoBehaviour
                         (SaveData.PlayerSpriteChoice)FindObjectOfType<PlayerAnimationManager>().activePlayerSprite, false);
 
         SaveLoadSystem.Save(false, newSaveData);
+        FindObjectOfType<SaveIcon>().OnSave();
         Debug.Log("Saved on new Checkpoint");
     }
 }
