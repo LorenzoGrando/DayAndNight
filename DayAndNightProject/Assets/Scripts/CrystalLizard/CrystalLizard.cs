@@ -13,7 +13,7 @@ public class CrystalLizard : MonoBehaviour {
     public StateMachine behaviourStateMachine = null;
     private GlowEffectManager _lastGlowEffectInteracted;
     private GlowEffectManager _lastPlayerGlowEffectInteracted = null;
-    private Vector2 _velocity = new Vector2(0,-0.1f);
+    private Vector2 _velocity = new Vector2(0,-3f);
     [SerializeField]
     private float speed;
     private float _lastTimeActive;
@@ -96,6 +96,9 @@ public class CrystalLizard : MonoBehaviour {
             case StateMachine.State.Approaching:
                 ApproachingBehaviour();
             break;
+            case StateMachine.State.Sleeping:
+                SleepingBehaviour();
+            break;
         }
     }
 
@@ -106,7 +109,7 @@ public class CrystalLizard : MonoBehaviour {
             Vector3 glowWorldPosition = trackedGlow.gameObject.transform.position;
             Vector2 spaceTowardsGlowCenter = glowWorldPosition - transform.position;
             Vector2 directionTowardsGlowCenter = spaceTowardsGlowCenter.normalized;
-
+            _animator.SetBool("Walking", true);
             MoveLizard(-directionTowardsGlowCenter.x);
         }
         else {
@@ -132,7 +135,7 @@ public class CrystalLizard : MonoBehaviour {
                     MoveLizard(directionTowardsGlowCenter.x, optionalSpeed, true);
                     return;
                 }
-
+                _animator.SetBool("Walking", true);
                 MoveLizard(directionTowardsGlowCenter.x);
             }
 
@@ -144,10 +147,16 @@ public class CrystalLizard : MonoBehaviour {
 
     private void IdleBehaviour() {
         UpdateDirection(0);
+        MoveLizard(0);
         _animator.SetBool("Walking", false);
         if(Time.time > _lastTimeActive + _sleepDelay) {
             behaviourStateMachine.DirectlyChangeState(StateMachine.State.Sleeping);
         }
+    }
+
+    private void SleepingBehaviour() {
+        UpdateDirection(0);
+        MoveLizard(0);
     }
 
     #endregion
@@ -158,7 +167,6 @@ public class CrystalLizard : MonoBehaviour {
         float finalSpeed = useOptionalSpeed ? optionalSpeed : speed;
         _velocity.x = xDirection * finalSpeed;
         UpdateDirection(xDirection);
-        _animator.SetBool("Walking", true);
         _controller.Move(_velocity * Time.deltaTime);
     }
 
@@ -169,8 +177,6 @@ public class CrystalLizard : MonoBehaviour {
     private void UpdateDirection(float direction) {
         bool isFaceLeft = direction < 0;
         bool isMaintainSide = direction == 0;
-        Debug.Log(direction);
-        Debug.Log(isFaceLeft);
         if(!isMaintainSide) {
             _renderer.flipX = isFaceLeft;
         }

@@ -23,9 +23,9 @@ public class CrystalSphere : MonoBehaviour, IInteractable {
         interactable = this;
     }
 
-    void Update()
+    void LateUpdate()
     {
-        MoveSphere(Mathf.Sign(velocity.x), velocity.x);
+        MoveSphere(Mathf.Sign(velocity.x), Mathf.Abs(velocity.x));
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -73,7 +73,8 @@ public class CrystalSphere : MonoBehaviour, IInteractable {
 
     void MoveSphere(float xDirection, float moveSpeed) {
         if(canMove) {
-            velocity.x = xDirection * moveSpeed;
+            Debug.Log(xDirection);
+            velocity.x = xDirection * (moveSpeed);
             _controller.Move(velocity * Time.deltaTime);
         }
     }
@@ -81,7 +82,7 @@ public class CrystalSphere : MonoBehaviour, IInteractable {
     void CollideWithLizard(GameObject lizardObject) {
         CrystalLizard lizardReference = lizardObject.GetComponent<CrystalLizard>();
         float lizardXVelocity = lizardReference.GetVelocity().x;
-        MoveSphere(Mathf.Sign(lizardXVelocity), lizardXVelocity);
+        MoveSphere(Mathf.Sign(lizardXVelocity), Mathf.Abs(lizardXVelocity) + .2f);
     }
 
     public void UpdateSphereStatus(SphereStatus newStatus) {

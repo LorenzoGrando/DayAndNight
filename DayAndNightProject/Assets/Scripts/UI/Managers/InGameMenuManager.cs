@@ -14,10 +14,26 @@ public class InGameMenuManager : MonoBehaviour
     [SerializeField]
     private GameObject[] buttonTiles;
     [SerializeField]
+    private GameObject[] optionsTiles;
+    [SerializeField]
+    private GameObject optionsActiveObject;
+    [SerializeField]
+    private GameObject mainActiveObject;
+    [SerializeField]
     private GameObject mainSelectorObject;
+    [SerializeField]
+    private GameObject optionsSelectorObject;
+    private GameObject activeSelectorObject;
     private int currentHoverIndex = 0;
     private float lastSelectorUpdateTime;
     private float lastSelectorInteractTime;
+
+    private enum ActiveInGameSelector {
+        Main,
+        Options,
+    };
+
+    private ActiveInGameSelector activeSelector;
     void OnEnable()
     {
         dataManager = FindObjectOfType<PlayerDataManager>();
@@ -42,8 +58,17 @@ public class InGameMenuManager : MonoBehaviour
             if(lastSelectorUpdateTime + 0.115f < Time.time) {
                 if(directional > 0) {
                     currentHoverIndex++;
-                    if(currentHoverIndex >= buttonTiles.Length)
-                        currentHoverIndex = buttonTiles.Length - 1;    
+                    int maxInput = 1;
+                    switch (activeSelector) {
+                        case ActiveInGameSelector.Main:
+                            maxInput = buttonTiles.Length;
+                        break;
+                        case ActiveInGameSelector.Options:
+                            maxInput = optionsTiles.Length;
+                        break;
+                    }
+                    if(currentHoverIndex >= maxInput)
+                        currentHoverIndex = maxInput - 1;    
                 }
                 else if(directional < 0) {
                     currentHoverIndex--;
@@ -54,7 +79,14 @@ public class InGameMenuManager : MonoBehaviour
                 lastSelectorUpdateTime = Time.time;
             }
 
-            UpdateSelectorPosition();
+            if(activeSelector == ActiveInGameSelector.Main) {
+                UpdateSelectorPosition(buttonTiles);
+            }
+            else if(activeSelector == ActiveInGameSelector.Options) {
+                UpdateSelectorPosition(optionsTiles);
+            }
+
+            
 
             if(lastSelectorInteractTime + 0.115f < Time.time) {
                 if(interact != 0) {
@@ -66,23 +98,52 @@ public class InGameMenuManager : MonoBehaviour
     }
 
     private void OnInteract() {
-        switch(currentHoverIndex) {
-            case 0:
-                //Options
-            break;
-            case 1:
-                //Quit to menu
-                fadeOutScreen.SetTrigger("PlayFadeIn");
-                MethodToCallback Callback = CallReloadScene;
-                StartCoroutine(routine:DelayCallbackBySeconds(2.75f, Callback));
-            break;
+        if(activeSelector == ActiveInGameSelector.Main) {
+            switch(currentHoverIndex) {
+                case 0:
+                    //Options
+                    ShowOptionsMenu();
+                break;
+                case 1:
+                    //Quit to menu
+                    fadeOutScreen.SetTrigger("PlayFadeIn");
+                    MethodToCallback Callback = CallReloadScene;
+                    StartCoroutine(routine:DelayCallbackBySeconds(2.75f, Callback));
+                break;
+            }
+        }
+        else if(activeSelector == ActiveInGameSelector.Options) {
+            CloseExtraWindows();
         }
     }
 
-    private void UpdateSelectorPosition() {
+    private void UpdateSelectorPosition(GameObject[] tiles) {
         Vector3 newPosition = mainSelectorObject.transform.position;
-        newPosition.x = buttonTiles[currentHoverIndex].transform.position.x;
+        newPosition.x = tiles[currentHoverIndex].transform.position.x;
         mainSelectorObject.transform.position = newPosition;
+    }
+
+    private void CloseExtraWindows() {
+        optionsActiveObject.SetActive(false);
+        ChangeDefaultMenuVisibility(true);
+        activeSelectorObject = mainSelectorObject;
+        activeSelector = ActiveInGameSelector.Main;
+        currentHoverIndex = 0;
+        UpdateSelectorPosition(buttonTiles);
+    }
+
+    private void ShowOptionsMenu() {
+        ChangeDefaultMenuVisibility(false);
+        optionsActiveObject.SetActive(true);
+        currentHoverIndex = 0;
+        activeSelectorObject = optionsSelectorObject;
+        activeSelector = ActiveInGameSelector.Options;
+
+        UpdateSelectorPosition(optionsTiles);
+    }
+
+    private void ChangeDefaultMenuVisibility(bool activeState) {
+        mainActiveObject.SetActive(activeState);
     }
 
     private void CallReloadScene() {
