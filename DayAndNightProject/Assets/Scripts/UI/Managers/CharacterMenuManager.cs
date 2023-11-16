@@ -50,14 +50,28 @@ public class CharacterMenuManager : MonoBehaviour
 
             if(lastSelectorUpdateTime + 0.115f < Time.time) {
                 if(directional > 0) {
+                    bool playSound = true;
                     currentHoverIndex++;
-                    if(currentHoverIndex >= capeTiles.Length)
-                        currentHoverIndex = capeTiles.Length - 1;    
+                    if(currentHoverIndex >= capeTiles.Length) {
+                        currentHoverIndex = capeTiles.Length - 1;
+                        playSound = false;
+                    }
+
+                    if(playSound) {
+                        FindObjectOfType<MenuSoundManager>().PlayMovementSound();
+                    }
                 }
                 else if(directional < 0) {
+                    bool playSound = true;
                     currentHoverIndex--;
-                    if(currentHoverIndex < 0)
+                    if(currentHoverIndex < 0) {
                         currentHoverIndex = 0;
+                        playSound = false;
+                    }
+
+                    if(playSound) {
+                        FindObjectOfType<MenuSoundManager>().PlayMovementSound();
+                    }
                 }
 
                 lastSelectorUpdateTime = Time.time;
@@ -101,6 +115,8 @@ public class CharacterMenuManager : MonoBehaviour
         Inventory currentInventory = dataManager.GetInventory();
 
         Item capeRef = currentInventory.capeItems[currentHoverIndex];
+
+        FindObjectOfType<MenuSoundManager>().PlaySelectionSound();
 
         if(capeRef.isUnlocked) {
             bool applyEffect = dataManager.UpdateActiveCape(capeRef);

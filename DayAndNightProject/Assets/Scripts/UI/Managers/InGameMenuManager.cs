@@ -57,6 +57,7 @@ public class InGameMenuManager : MonoBehaviour
 
             if(lastSelectorUpdateTime + 0.115f < Time.time) {
                 if(directional > 0) {
+                    bool playSound = true;
                     currentHoverIndex++;
                     int maxInput = 1;
                     switch (activeSelector) {
@@ -67,13 +68,25 @@ public class InGameMenuManager : MonoBehaviour
                             maxInput = optionsTiles.Length;
                         break;
                     }
-                    if(currentHoverIndex >= maxInput)
-                        currentHoverIndex = maxInput - 1;    
+                    if(currentHoverIndex >= maxInput) {
+                        currentHoverIndex = maxInput - 1;
+                        playSound = false;
+                    }
+
+                    if(playSound) {
+                        FindObjectOfType<MenuSoundManager>().PlayMovementSound();
+                    }
                 }
                 else if(directional < 0) {
+                    bool playSound = true;
                     currentHoverIndex--;
-                    if(currentHoverIndex < 0)
+                    if(currentHoverIndex < 0) {
                         currentHoverIndex = 0;
+                        playSound = false;
+                    }
+                    if(playSound) {
+                        FindObjectOfType<MenuSoundManager>().PlayMovementSound();
+                    }
                 }
 
                 lastSelectorUpdateTime = Time.time;
@@ -99,6 +112,7 @@ public class InGameMenuManager : MonoBehaviour
 
     private void OnInteract() {
         if(activeSelector == ActiveInGameSelector.Main) {
+            FindObjectOfType<MenuSoundManager>().PlaySelectionSound();
             switch(currentHoverIndex) {
                 case 0:
                     //Options
@@ -113,6 +127,7 @@ public class InGameMenuManager : MonoBehaviour
             }
         }
         else if(activeSelector == ActiveInGameSelector.Options) {
+            FindObjectOfType<MenuSoundManager>().PlaySelectionSound();
             CloseExtraWindows();
         }
     }
