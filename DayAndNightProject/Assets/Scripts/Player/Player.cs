@@ -8,6 +8,10 @@ public class Player : MonoBehaviour
 {
     public event Action<float> OnPlayerDirectionalInput;
 
+    public bool isWalking = false;
+    public bool isJumping = false;
+
+
     #region Component References
     private Controller2D _controller;
 
@@ -94,9 +98,20 @@ public class Player : MonoBehaviour
         _velocity.x = Mathf.SmoothDamp(_velocity.x, targetXVelocity, ref _smoothXVelocity, _controller.Collisions.below ? groundAcceleration : airborneAcceleration);
         _velocity.y += _gravity * Time.deltaTime;
         _controller.Move(_velocity * Time.deltaTime);
+
+        float absVelocityX = Mathf.Abs(_velocity.x);
+
+        if(absVelocityX < 0.01 || !_controller.Collisions.below) {
+            FindObjectOfType<PlayerSoundManager>().StopWalkingSound();
+        }
+
+        if(absVelocityX > 0 && _controller.Collisions.below) {
+            FindObjectOfType<PlayerSoundManager>().StartMovementSound();
+        }
     }
 
     private void Jump() {
+        FindObjectOfType<PlayerSoundManager>().JumpSound();
         _velocity.y = _maxJumpVelocity;
     }
 

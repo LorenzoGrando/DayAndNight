@@ -87,6 +87,7 @@ public class MainMenuManager : MonoBehaviour
 
             if(lastSelectorUpdateTime + 0.115f < Time.time) {
                 if(directional > 0) {
+                    bool playSound = true;
                     currentHoverIndex++;
                     int maxInput = 1;
                     switch (activeSelector) {
@@ -100,13 +101,26 @@ public class MainMenuManager : MonoBehaviour
                             maxInput = conflictOptions.Length;
                         break;
                     }
-                    if(currentHoverIndex >= maxInput)
-                        currentHoverIndex = maxInput - 1;    
+                    if(currentHoverIndex >= maxInput) {
+                        currentHoverIndex = maxInput - 1;
+                        playSound = false;
+                    }
+
+                    if(playSound) {
+                        FindObjectOfType<MenuSoundManager>().PlayMovementSound();
+                    }
                 }
                 else if(directional < 0) {
+                    bool playSound = true;
                     currentHoverIndex--;
-                    if(currentHoverIndex < 0)
+                    if(currentHoverIndex < 0) {
                         currentHoverIndex = 0;
+                        playSound = false;
+                    }
+
+                    if(playSound) {
+                        FindObjectOfType<MenuSoundManager>().PlayMovementSound();
+                    }
                 }
 
                 lastSelectorUpdateTime = Time.time;
@@ -135,6 +149,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void OnInteract() {
         if(activeSelector == ActiveSelector.Main) {
+            FindObjectOfType<MenuSoundManager>().PlaySelectionSound();
             switch(currentHoverIndex) {
                 case 0:
                     bool isDefaultFile;
@@ -162,9 +177,11 @@ public class MainMenuManager : MonoBehaviour
             }
         }
         else if(activeSelector == ActiveSelector.Options) {
+            FindObjectOfType<MenuSoundManager>().PlaySelectionSound();
             CloseAllExtraWindows();
         }
         else if (activeSelector == ActiveSelector.Conflict) {
+            FindObjectOfType<MenuSoundManager>().PlaySelectionSound();
             switch(activeConflictType) {
                 case ConflictType.Default:
                     if(currentHoverIndex == 0) {
@@ -190,6 +207,8 @@ public class MainMenuManager : MonoBehaviour
     private void UpdateSelectorPosition(GameObject[] buttons) {
         Vector3 newPosition = activeSelectorObject.transform.position;
         newPosition.x = buttons[currentHoverIndex].transform.position.x;
+
+
         activeSelectorObject.transform.position = newPosition;
     }
 
