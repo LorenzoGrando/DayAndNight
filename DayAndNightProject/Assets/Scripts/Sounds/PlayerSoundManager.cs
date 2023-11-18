@@ -5,11 +5,15 @@ using UnityEngine;
 public class PlayerSoundManager : MonoBehaviour
 {
     [SerializeField]
-    private AudioSource walkSource, jumpSource;
+    private AudioSource walkSource, jumpSource, sphereSound;
 
     public void StartMovementSound() {
         if(!walkSource.isPlaying)
             walkSource.Play();
+    }
+
+    public void PlaySphereSound() {
+        sphereSound.Play();
     }
 
     public void JumpSound() {

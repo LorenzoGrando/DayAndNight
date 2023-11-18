@@ -48,6 +48,7 @@ public class PlayerInteractor : MonoBehaviour
             sphere.UpdateSphereStatus(CrystalSphere.SphereStatus.Uninteractable);
             sphere.transform.parent = sphereHeldPosition.transform;
             sphere.transform.localPosition = Vector3.zero;
+            FindObjectOfType<PlayerSoundManager>().PlaySphereSound();
         }
     }
 

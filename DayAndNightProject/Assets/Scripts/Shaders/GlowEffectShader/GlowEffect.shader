@@ -76,6 +76,8 @@ Shader "Custom/GlowEffect"
                 VertexPositionInputs posInputs = GetVertexPositionInputs(input.positionOS);
                 o.positionCS = posInputs.positionCS;
                 o.uv = TRANSFORM_TEX(input.uv, _BaseMap);
+                o.uv.y += 0.05 * _SinTime;
+                o.uv.x -= 0.05 * _SinTime;
                 o.polarUV = o.uv;
                 o.screenPos = posInputs.positionNDC;
 
@@ -95,6 +97,7 @@ Shader "Custom/GlowEffect"
                 float4 textureColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
                 //textureColor *= _TemporaryColor;
                 screenColor *= (textureColor) * 7.5;
+                //screenColor += textureColor;
 
                 if(invertedPolar.x < 1 - _OutlineWidth) {
                     return _OutlineColor;

@@ -50,6 +50,8 @@ public class MainMenuManager : MonoBehaviour
 
         bool isDefaultSave;
         SaveLoadSystem.GetCurrentSave(out isDefaultSave);
+
+        FindObjectOfType<MenuSoundManager>().FadeInMenuSong();
         if(isDefaultSave) {
             buttonTiles[1].GetComponent<CanvasGroup>().alpha = 0.35f;
         }
@@ -70,6 +72,7 @@ public class MainMenuManager : MonoBehaviour
     public void DisableMenu() {
         canvasEnablerObject.SetActive(false);
         fadeOutScreen.SetTrigger("PlayFadeOut");
+        FindObjectOfType<InGameSoundManager>().FadeInMusic();
     }
 
     private void ChangeDefaultMenuVisibility(bool isVisible) {
@@ -214,6 +217,7 @@ public class MainMenuManager : MonoBehaviour
 
     private void StartGame() {
         fadeOutScreen.SetTrigger("PlayFadeIn");
+        FindObjectOfType<MenuSoundManager>().FadeOutMenuSong();
         FindObjectOfType<PlayerInput>().UpdateActiveActionMap(PlayerInput.InputMaps.Gameplay);
         MethodToCallback callback = DisableMenu;
         StartCoroutine(routine:DelayCallbackBySeconds(2.75f, callback));

@@ -11,6 +11,8 @@ public class SphereTotemManager : MonoBehaviour, IInteractable
     private SpriteRenderer _spriteObjectRenderer;
     [SerializeField]
     private Sprite[] stateSprites;
+    [SerializeField]
+    private AudioSource _placeSound;
 
     void OnEnable() {
         _totemGlowEffect = _totemGlowEffect != null ? _totemGlowEffect : GetComponentInChildren<GlowEffectManager>();
@@ -78,6 +80,7 @@ public class SphereTotemManager : MonoBehaviour, IInteractable
     void GetSphere(CrystalSphere sphere) {
         currentSphere = sphere;
         currentSphere.UpdateSphereStatus(CrystalSphere.SphereStatus.Hidden);
+        _placeSound.Play();
         currentSphere.transform.parent = this.transform.parent;
         currentSphere.transform.localPosition = Vector3.zero;
     }

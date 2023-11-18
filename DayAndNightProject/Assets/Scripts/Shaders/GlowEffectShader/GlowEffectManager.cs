@@ -44,6 +44,8 @@ public class GlowEffectManager : MonoBehaviour
         public float outlineWidth;
         public Color temporaryOverlayColor;
         public Texture2D glowTexture;
+        public AudioSource maskAudio;
+        public float maskAudioVolume;
     }
     void Awake()
     {
@@ -96,24 +98,48 @@ public class GlowEffectManager : MonoBehaviour
         if(!isActive) {
             if(glowType == GlowType.Sun) {
                 AssignMaterialProperties(sunMaskData);
+                StopSounds();
+                sunMaskData.maskAudio.Play();
+                sunMaskData.maskAudio.volume = 0;
+                sunMaskData.maskAudio.DOFade(sunMaskData.maskAudioVolume, animDuration);
             }
             else if (glowType == GlowType.Moon) {
+                StopSounds();
                 AssignMaterialProperties(moonMaskData);
+                moonMaskData.maskAudio.Play();
+                moonMaskData.maskAudio.volume = 0;
+                moonMaskData.maskAudio.DOFade(moonMaskData.maskAudioVolume, animDuration);
             }
             isActive = true;
 
+            
             currentTweenSequence = DOTween.Sequence();
             currentTweenSequence.Append(transform.DOScale(Vector3.one * currentTargetScale, animDuration));
             currentTweenSequence.AppendInterval(delayBeforeFadeOut);
             if(fadeOut) {
+                Tween fakeTween = sunMaskData.maskAudio.DOFade(sunMaskData.maskAudioVolume, 0.1f).OnComplete(() => CallSoundFade());
+                currentTweenSequence.Append(fakeTween);
                 currentTweenSequence.Append(transform.DOScale(Vector3.zero, animDuration));
                 currentTweenSequence.OnComplete(() => EndGlowEffect());
             }
         }
     }
 
+    private void CallSoundFade() {
+        sunMaskData.maskAudio.DOFade(0, animDuration);
+        moonMaskData.maskAudio.DOFade(0, animDuration).OnComplete(() => StopSounds());
+    }
+
+    private void StopSounds() {
+        sunMaskData.maskAudio.Stop();
+        moonMaskData.maskAudio.Stop();
+    }
+
     public void ForceFadeOutGlow() {
         if(isActive) {
+            sunMaskData.maskAudio.DOFade(0, animDuration);
+            moonMaskData.maskAudio.DOFade(0, animDuration);
+
             currentTweenSequence?.Kill();
             currentTweenSequence = DOTween.Sequence();
             currentTweenSequence.Append(transform.DOScale(Vector3.zero, animDuration));

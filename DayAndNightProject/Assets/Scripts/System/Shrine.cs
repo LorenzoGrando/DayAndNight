@@ -63,15 +63,17 @@ public class Shrine : MonoBehaviour
         thisShrineCutsceneCam.gameObject.SetActive(true);
         shrineClouds.FadeOutClouds();
         thisShrineCutsceneCam.SetTrigger("FirstAnim");
+        FindObjectOfType<InGameSoundManager>().PlayShrine();
+        FindObjectOfType<InGameSoundManager>().HalfFadeOutMusic();
         StartCoroutine(routine:DelaySecondAnimation());
     }
 
     private void BeginFinishActivationCutcene() {
         thisShrineCutsceneCam.SetTrigger("LastAnim");
+        FindObjectOfType<InGameSoundManager>().EndShrine();
+        FindObjectOfType<InGameSoundManager>().FadeInMusic();
         StartCoroutine(DelayRecallSpawnPos(animDurationDelay/2));
     }
-
-
 
     IEnumerator DelaySecondAnimation() {
         yield return new WaitForSeconds(animDurationDelay);
