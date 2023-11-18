@@ -6,6 +6,7 @@ public class Consumable : MonoBehaviour
 {
     public Item thisConsumableType;
     public bool wasCollected;
+    public bool playedSounf = false;
     void Awake()
     {
         wasCollected = false;
@@ -22,6 +23,7 @@ public class Consumable : MonoBehaviour
         wasCollected = true;
         gameObject.SetActive(false);
         FindObjectOfType<ConsumableLoader>().UpdateConsumableData();
+        FindObjectOfType<InGameSoundManager>().PlayCollectable();
     }
 
     public void UpdateItem(Item newItem) {

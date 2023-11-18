@@ -121,6 +121,7 @@ public class InGameMenuManager : MonoBehaviour
                 case 1:
                     //Quit to menu
                     fadeOutScreen.SetTrigger("PlayFadeIn");
+                    FindObjectOfType<InGameSoundManager>().StopMusic();
                     MethodToCallback Callback = CallReloadScene;
                     StartCoroutine(routine:DelayCallbackBySeconds(2.75f, Callback));
                 break;

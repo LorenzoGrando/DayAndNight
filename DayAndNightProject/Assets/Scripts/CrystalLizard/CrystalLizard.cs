@@ -19,6 +19,9 @@ public class CrystalLizard : MonoBehaviour {
     private float _lastTimeActive;
     private float _sleepDelay = 2.5f;
 
+    [SerializeField]
+    private AudioSource _moveSound;
+
     #region Unity Methods
 
     void OnEnable()
@@ -89,12 +92,19 @@ public class CrystalLizard : MonoBehaviour {
         switch (behaviourStateMachine.CurrentState) {
             case StateMachine.State.Idle:
                 IdleBehaviour();
+                _moveSound.Stop();
             break;
             case StateMachine.State.Escaping:
                 EscapingBehaviour();
+                if(!_moveSound.isPlaying) {
+                    _moveSound.Play();
+                }
             break;
             case StateMachine.State.Approaching:
                 ApproachingBehaviour();
+                if(!_moveSound.isPlaying) {
+                    _moveSound.Play();
+                }
             break;
             case StateMachine.State.Sleeping:
                 SleepingBehaviour();
