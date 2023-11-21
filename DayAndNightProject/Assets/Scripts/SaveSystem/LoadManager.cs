@@ -42,6 +42,7 @@ public class LoadManager : MonoBehaviour
         shrineLoader.OnLoad(loadData.savedShrineData);
         consumableLoader.OnGameLoad(loadData);
         animManager.UpdateActiveSprite(loadData);
+        animManager.UpdateCape(loadData.savedPlayerData.currentInventory.ReturnCurrentInventoryData().activeCapeIndexValue);
 
         UpdatePlayerToLoad(loadData);
     }
