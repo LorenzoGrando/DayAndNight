@@ -15,11 +15,15 @@ MonoBehaviour:
   itemStorageType: 0
   itemType: 0
   consumableType: 1
-  itemQuantity: 1
+  itemQuantity: 9
   isUnlocked: 0
   itemName: Moonite
   itemThemeDescription: 
   itemFunctionalitDescription: 
   itemSprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   capeGlowType: 0
-  buyRequirements: []
+  buyRequirements:
+  - 0
+  - 0
+  - 0
+  - 0

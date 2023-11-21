@@ -34,6 +34,7 @@ Shader "Custom/GlowEffect"
                 float2 uv : TEXCOORD0;
                 float2 polarUV : TEXCOORD1;
                 float4 screenPos : TEXCOORD2;
+                float2 textureScrollUV : TEXCOORD3;
             };
 
             TEXTURE2D(_BaseMap);
@@ -58,6 +59,8 @@ Shader "Custom/GlowEffect"
             float _OutlineWidth;
 
             float4 _TemporaryColor;
+            float _Intensity;
+            float _isAdditive;
 
             float2 ConvertUVToPolar(float2 uv, float2 center, float radialScale, float lenghtScale) {
                 float2 delta = uv - center;
@@ -76,8 +79,9 @@ Shader "Custom/GlowEffect"
                 VertexPositionInputs posInputs = GetVertexPositionInputs(input.positionOS);
                 o.positionCS = posInputs.positionCS;
                 o.uv = TRANSFORM_TEX(input.uv, _BaseMap);
-                o.uv.y += 0.05 * _SinTime;
-                o.uv.x -= 0.05 * _SinTime;
+                o.textureScrollUV = o.uv;
+                o.textureScrollUV.y += 0.15 * _SinTime;
+                o.textureScrollUV.x -= 0.15 * _SinTime;
                 o.polarUV = o.uv;
                 o.screenPos = posInputs.positionNDC;
 
@@ -94,9 +98,14 @@ Shader "Custom/GlowEffect"
 
 
                 float4 screenColor = SAMPLE_TEXTURE2D(_ScreenRenderTexture, sampler_ScreenRenderTexture, i.screenPos.xy / i.screenPos.w);
-                float4 textureColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
+                float4 textureColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.textureScrollUV);
                 //textureColor *= _TemporaryColor;
-                screenColor *= (textureColor) * 7.5;
+                if(_isAdditive > 0.85) {
+                    screenColor += (textureColor) / _Intensity;
+                }
+                else {
+                    screenColor *= (textureColor) * _Intensity;
+                }
                 //screenColor += textureColor;
 
                 if(invertedPolar.x < 1 - _OutlineWidth) {
