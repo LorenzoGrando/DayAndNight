@@ -42,6 +42,8 @@ public class GlowEffectManager : MonoBehaviour
         [Range(0,100)]
         public int waveAmount;
         public float outlineWidth;
+        public float intensity;
+        public bool isAdditive;
         public Color temporaryOverlayColor;
         public Texture2D glowTexture;
         public AudioSource maskAudio;
@@ -88,6 +90,9 @@ public class GlowEffectManager : MonoBehaviour
         effectMat.SetFloat("_ThresholdValue", currentMaskData.thresholdValue);
         effectMat.SetFloat("_WaveSpeed", currentMaskData.waveSpeed);
         effectMat.SetInt("_WaveAmount", currentMaskData.waveAmount);
+        effectMat.SetFloat("_Intensity", currentMaskData.intensity);
+        float additiveValue = currentMaskData.isAdditive ? 1 : 0;
+        effectMat.SetFloat("_IsAdditive", additiveValue);
         effectMat.SetFloat("_OutlineWidth", currentMaskData.outlineWidth);
         effectMat.SetColor("_TemporaryColor", currentMaskData.temporaryOverlayColor);
         effectMat.SetTexture("_BaseMap", currentMaskData.glowTexture);

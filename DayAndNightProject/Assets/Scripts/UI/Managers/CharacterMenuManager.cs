@@ -121,6 +121,7 @@ public class CharacterMenuManager : MonoBehaviour
         if(capeRef.isUnlocked) {
             bool applyEffect = dataManager.UpdateActiveCape(capeRef);
             if(applyEffect) {
+                FindObjectOfType<PlayerAnimationManager>().UpdateCape(currentHoverIndex);
                 if(capeRef.capeGlowType == GlowEffectManager.GlowType.Null) {
                     dataManager.gameObject.GetComponentInChildren<GlowEffectManager>().ResetToDefaultValues();
                 }

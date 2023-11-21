@@ -7,6 +7,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public event Action<float> OnPlayerDirectionalInput;
+    private PlayerAnimationManager _animManager;
 
     public bool isWalking = false;
     public bool isJumping = false;
@@ -51,6 +52,7 @@ public class Player : MonoBehaviour
         if(_controller == null) {
             _controller = GetComponent<Controller2D>();
         }
+        _animManager = FindObjectOfType<PlayerAnimationManager>();
         _gravity = -(2 * maxJumpHeight/ Mathf.Pow(timeToJumpApex,2));
         _maxJumpVelocity = Mathf.Abs(_gravity) * timeToJumpApex;
         _minJumpVelocity = Mathf.Sqrt(2 * Mathf.Abs(_gravity) * minJumpHeight);
@@ -97,6 +99,12 @@ public class Player : MonoBehaviour
         float targetXVelocity = _directionalInput * speed;
         _velocity.x = Mathf.SmoothDamp(_velocity.x, targetXVelocity, ref _smoothXVelocity, _controller.Collisions.below ? groundAcceleration : airborneAcceleration);
         _velocity.y += _gravity * Time.deltaTime;
+
+        bool walking = _directionalInput != 0;
+        int grounded = _controller.Collisions.below ? 1 : 0;
+        _animManager.UpdateAnimatorParameters(walking, grounded);
+        
+
         _controller.Move(_velocity * Time.deltaTime);
 
         float absVelocityX = Mathf.Abs(_velocity.x);
@@ -112,6 +120,7 @@ public class Player : MonoBehaviour
 
     private void Jump() {
         FindObjectOfType<PlayerSoundManager>().JumpSound();
+        _animManager.TriggerJump();
         _velocity.y = _maxJumpVelocity;
     }
 
