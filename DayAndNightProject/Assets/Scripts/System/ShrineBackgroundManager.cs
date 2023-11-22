@@ -49,8 +49,8 @@ public class ShrineBackgroundManager : MonoBehaviour
             case GlowEffectManager.GlowType.Moon:
                 foreach(MeshRenderer bg2 in backgroundArea) {
                     Material material2 = bg2.material;
-                    material2.SetTexture("_RightTexture", transitionTextures[0]);
-                    material2.SetTexture("_LeftTexture", transitionTextures[0]);
+                    material2.SetTexture("_RightTexture", transitionTextures[1]);
+                    material2.SetTexture("_LeftTexture", transitionTextures[1]);
                 }
             break;
         }

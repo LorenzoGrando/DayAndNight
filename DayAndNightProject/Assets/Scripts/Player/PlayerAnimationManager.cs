@@ -24,6 +24,13 @@ public class PlayerAnimationManager : MonoBehaviour
         _player = GetComponentInParent<Player>();
         _animator = GetComponent<Animator>();
         _player.OnPlayerDirectionalInput += UpdateDirections;
+        SaveLoadSystem.OnSaveGame += UpdateHairMode;
+    }
+
+    void OnDisable()
+    {
+        _player.OnPlayerDirectionalInput -= UpdateDirections;
+        SaveLoadSystem.OnSaveGame -= UpdateHairMode;
     }
     private void UpdateDirections(float xDirection) {
         bool isFaceLeft = xDirection == -1;
@@ -62,18 +69,53 @@ public class PlayerAnimationManager : MonoBehaviour
     public void UpdateActiveSprite(SaveData saveData) {
         activePlayerSprite = (int)saveData.thisGameSpriteChoice;
 
-        //Old System
         if(spritePartParents[0].transform.childCount > 0) {
             switch(activePlayerSprite) {
                 case 0:
-                    spritePartParents[0].transform.GetChild(0).gameObject.SetActive(true);
-                    spritePartParents[0].transform.GetChild(1).gameObject.SetActive(false);
+                    _hairLibrary.spriteLibraryAsset = _femHairLibraries[0];
                 break;
                 case 1:
-                    spritePartParents[0].transform.GetChild(0).gameObject.SetActive(false);
-                    spritePartParents[0].transform.GetChild(1).gameObject.SetActive(true);
+                    _hairLibrary.spriteLibraryAsset = _malehairLibraries[0];
                 break;
             }
+        }
+
+        UpdateHairMode(saveData);
+    }
+
+    public void UpdateHairMode(SaveData saveData)  {
+        bool isMale = activePlayerSprite == 0 ? false : true;
+        int hairIndex = 0;
+
+        if(saveData.savedShrineData.sceneShrineData != null) {
+            switch(saveData.savedShrineData.sceneShrineData[0].status) {
+                case Shrine.ShrineTypeStatus.Uncomplete:
+                    hairIndex = 0;
+                break;
+                case Shrine.ShrineTypeStatus.Sun:
+                    hairIndex = 1;
+                break;
+                case Shrine.ShrineTypeStatus.Moon:
+                    hairIndex = 2;
+                break;
+            }
+
+            if(isMale) {
+                _hairLibrary.spriteLibraryAsset = _malehairLibraries[hairIndex];
+            }
+            else {
+                _hairLibrary.spriteLibraryAsset = _femHairLibraries[hairIndex];
+            }
+        }
+        else {
+            bool isMale2 = activePlayerSprite == 0 ? false : true;
+
+            if(isMale2) {
+                    _hairLibrary.spriteLibraryAsset = _malehairLibraries[0];
+                }
+                else {
+                    _hairLibrary.spriteLibraryAsset = _femHairLibraries[0];
+                }
         }
     }
 
