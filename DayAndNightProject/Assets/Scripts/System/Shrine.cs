@@ -60,7 +60,8 @@ public class Shrine : MonoBehaviour
 
     private void BeginActivationCutscene() {
         cameraTransitioner.ChangePlayerCamStatus(false);
-        thisShrineCutsceneCam.gameObject.SetActive(true);
+        if(thisShrineCutsceneCam != null)
+            thisShrineCutsceneCam.gameObject.SetActive(true);
         shrineClouds.FadeOutClouds();
         thisShrineCutsceneCam.SetTrigger("FirstAnim");
         FindObjectOfType<InGameSoundManager>().PlayShrine();
@@ -85,7 +86,8 @@ public class Shrine : MonoBehaviour
         yield return new WaitForSeconds(delay);
         FindObjectOfType<PlayerSpawnManager>().ReturnPlayerToSpawn();
         yield return new WaitForSeconds(delay);
-        thisShrineCutsceneCam.gameObject.SetActive(false);
+        if(thisShrineCutsceneCam != null) 
+            thisShrineCutsceneCam.gameObject.SetActive(false);
         cameraTransitioner.ChangePlayerCamStatus(true);
         yield break;
     }
