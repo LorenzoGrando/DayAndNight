@@ -15,7 +15,7 @@ MonoBehaviour:
   itemStorageType: 0
   itemType: 0
   consumableType: 0
-  itemQuantity: 9
+  itemQuantity: 0
   isUnlocked: 0
   itemName: Sunite
   itemThemeDescription: 
