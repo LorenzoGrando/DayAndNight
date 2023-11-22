@@ -94,7 +94,7 @@ public class CharacterMenuManager : MonoBehaviour
         Inventory currentInventory = dataManager.GetInventory();
 
         for(int i = 0; i < capeTiles.Length; i++) {
-            capeTiles[i].GetNewItem(currentInventory.capeItems[i]);
+            capeTiles[i].GetNewItem(currentInventory.capeItems[i], currentInventory.consumableItems[0].itemQuantity,  currentInventory.consumableItems[1].itemQuantity);
             bool isActive = currentInventory.capeItems[i] == currentInventory.activeCape;
             capeTiles[i].UpdateAppearance(isActive);
         }
@@ -106,7 +106,8 @@ public class CharacterMenuManager : MonoBehaviour
     }
 
     private void UpdateSelectorPosition() {
-        Vector3 newPosition = capeTiles[currentHoverIndex].transform.position;
+        Vector3 newPosition = selectorObject.transform.position;
+        newPosition.x = capeTiles[currentHoverIndex].transform.position.x;
         selectorObject.transform.position = newPosition;
         descriptionManager.UpdateTexts(dataManager.GetInventory().capeItems[currentHoverIndex]);
     }

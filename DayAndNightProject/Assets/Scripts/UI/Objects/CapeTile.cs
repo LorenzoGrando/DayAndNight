@@ -11,11 +11,27 @@ public class CapeTile : MonoBehaviour
 
     private Item thisTileItem;
     public Image myImage;
-    public void GetNewItem(Item newItem) {
+    public Color[] textColors;
+    public void GetNewItem(Item newItem, float currentMoonAmount, float currentSunAmount) {
         thisTileItem = newItem;
         for(int i = 0; i < 2; i++) {
             TextMeshProUGUI text = lockGameObject.transform.GetChild(i).GetComponent<TextMeshProUGUI>();
-            text.text = newItem.buyRequirements[i].ToString();
+            if(text != null) {
+                text.text = newItem.buyRequirements[i].ToString();
+                Color color =  textColors[0];
+                if(i == 0) {
+                    if(newItem.buyRequirements[i] <= currentMoonAmount) {
+                        color = textColors[1];
+                    }
+                }
+                else {
+                    if(newItem.buyRequirements[i] <= currentMoonAmount) {
+                        color = textColors[1];
+                    }
+                }
+
+                text.color = color;
+            }
         }
     }
 
@@ -23,10 +39,14 @@ public class CapeTile : MonoBehaviour
         lockGameObject.SetActive(!thisTileItem.isUnlocked);
 
         if(isActive) {
-            myImage.color = Color.cyan;
+            Color color = myImage.color;
+            color.a = 1;
+            myImage.color = color;
         }
         else {
-            myImage.color = Color.white;
+            Color color = myImage.color;
+            color.a = 0;
+            myImage.color = color;
         }
     }
 }

@@ -15,7 +15,7 @@ MonoBehaviour:
   itemStorageType: 0
   itemType: 0
   consumableType: 1
-  itemQuantity: 9
+  itemQuantity: 1
   isUnlocked: 0
   itemName: Moonite
   itemThemeDescription: 
