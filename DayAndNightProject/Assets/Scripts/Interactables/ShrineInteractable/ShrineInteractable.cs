@@ -48,6 +48,7 @@ public class ShrineInteractable : MonoBehaviour, IInteractable
     void IInteractable.OnInteractorActivate() {
         if(thisActivatorShine != null) {
             thisActivatorShine.ActivateShrine(ThisActivatorType);
+            FindObjectOfType<TotemManager>().DisableAllGlows();
         }
     }
 

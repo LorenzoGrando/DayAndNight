@@ -47,10 +47,9 @@ public class PlatformManager : MonoBehaviour
             }
             else {
                 _lastGlowEffectInteracted = other.GetComponentInParent<GlowEffectManager>();
-                if(_lastPlayerGlowEffectInteracted == null) {
                     colliderGlowType = _lastGlowEffectInteracted.GetGlowType();
                     OnEnterGlowBehaviour(colliderGlowType);
-                }
+                
             }
         }
     }
