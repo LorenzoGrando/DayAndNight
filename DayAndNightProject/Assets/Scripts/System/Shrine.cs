@@ -18,6 +18,7 @@ public class Shrine : MonoBehaviour
     private ShrineBackgroundManager shrineBackgrounds;
     private CameraTransitionManager cameraTransitioner;
     public float animDurationDelay;
+    public bool isLastShrine = false;
 
     void OnEnable()
     {
@@ -74,6 +75,10 @@ public class Shrine : MonoBehaviour
         FindObjectOfType<InGameSoundManager>().EndShrine();
         FindObjectOfType<InGameSoundManager>().FadeInMusic();
         StartCoroutine(DelayRecallSpawnPos(animDurationDelay/2));
+
+        if(isLastShrine) {
+            FindObjectOfType<EndGameScreenManager>().StartEndCutscene();
+        }
     }
 
     IEnumerator DelaySecondAnimation() {

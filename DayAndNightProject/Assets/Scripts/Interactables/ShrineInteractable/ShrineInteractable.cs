@@ -10,6 +10,8 @@ public class ShrineInteractable : MonoBehaviour, IInteractable
     [SerializeField]
     private Shrine thisActivatorShine;
     public Shrine.ShrineTypeStatus ThisActivatorType;
+    [SerializeField]
+    private GameObject textTooltipObject;
     void Awake()
     {
         _collider = GetComponent<Collider2D>();
@@ -34,6 +36,9 @@ public class ShrineInteractable : MonoBehaviour, IInteractable
     void IInteractable.OnInteractorEnter(GameObject newInteractor) {
         _lastPlayerInteractor = newInteractor.GetComponent<PlayerInteractor>();
         _lastPlayerInteractor.UpdateLastInteractable(interactable);
+        if(thisActivatorShine.thisShrineStatus == Shrine.ShrineTypeStatus.Uncomplete) {
+            textTooltipObject.SetActive(true);
+        }
     }
 
     void IInteractable.OnInteractorExit(GameObject oldInteractor) {
@@ -42,6 +47,7 @@ public class ShrineInteractable : MonoBehaviour, IInteractable
                 _lastPlayerInteractor.UpdateLastInteractable(null);
                 _lastPlayerInteractor = null;
             }
+            textTooltipObject.SetActive(false);
         }
     }
 
@@ -49,6 +55,7 @@ public class ShrineInteractable : MonoBehaviour, IInteractable
         if(thisActivatorShine != null) {
             thisActivatorShine.ActivateShrine(ThisActivatorType);
             FindObjectOfType<TotemManager>().DisableAllGlows();
+            textTooltipObject.SetActive(false);
         }
     }
 

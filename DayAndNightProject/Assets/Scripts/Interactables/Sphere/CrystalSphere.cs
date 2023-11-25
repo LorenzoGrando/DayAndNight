@@ -15,6 +15,8 @@ public class CrystalSphere : MonoBehaviour, IInteractable {
     public SphereStatus currentSphereStatus {get; private set;}
     private Vector2 velocity = new Vector2(0, -2f);
     private bool canMove = true;
+    [SerializeField]
+    private GameObject textTooltipObject;
 
     void Awake()
     {
@@ -53,6 +55,8 @@ public class CrystalSphere : MonoBehaviour, IInteractable {
     void IInteractable.OnInteractorEnter(GameObject newInteractor) {
         _lastPlayerInteractor = newInteractor.GetComponent<PlayerInteractor>();
         _lastPlayerInteractor.UpdateLastInteractable(interactable);
+        if(currentSphereStatus == SphereStatus.Default && _lastPlayerInteractor.playerDataManager.currentPlayerData.currentHeldSphere == null)
+            textTooltipObject.SetActive(true);
     }
 
     void IInteractable.OnInteractorExit(GameObject oldInteractor) {
@@ -61,6 +65,7 @@ public class CrystalSphere : MonoBehaviour, IInteractable {
                 _lastPlayerInteractor.UpdateLastInteractable(null);
                 _lastPlayerInteractor = null;
             }
+            textTooltipObject.SetActive(false);
         }
     }
 

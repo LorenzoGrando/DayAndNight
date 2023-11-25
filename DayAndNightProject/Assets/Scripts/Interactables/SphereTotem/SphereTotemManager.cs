@@ -13,6 +13,8 @@ public class SphereTotemManager : MonoBehaviour, IInteractable
     private Sprite[] stateSprites;
     [SerializeField]
     private AudioSource _placeSound;
+    [SerializeField]
+    private GameObject textTooltipoObject;
 
     void OnEnable() {
         _totemGlowEffect = _totemGlowEffect != null ? _totemGlowEffect : GetComponentInChildren<GlowEffectManager>();
@@ -37,6 +39,9 @@ public class SphereTotemManager : MonoBehaviour, IInteractable
     void IInteractable.OnInteractorEnter(GameObject interactorObject) {
         _lastPlayerInteractor = interactorObject.GetComponent<PlayerInteractor>();
         _lastPlayerInteractor.UpdateLastInteractable(interactable);
+        if((_lastPlayerInteractor.playerDataManager.currentPlayerData.currentHeldSphere != null && currentSphere == null) 
+            || _lastPlayerInteractor.playerDataManager.currentPlayerData.currentHeldSphere == null && currentSphere != null)
+            textTooltipoObject.SetActive(true);
     }
 
     void IInteractable.OnInteractorExit(GameObject oldInteractorObject) {
@@ -47,6 +52,7 @@ public class SphereTotemManager : MonoBehaviour, IInteractable
                     _lastPlayerInteractor = null;
                 }
             }
+            textTooltipoObject.SetActive(false);
         }
     }
 
