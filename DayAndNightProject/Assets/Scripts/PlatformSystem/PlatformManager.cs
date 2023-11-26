@@ -57,15 +57,10 @@ public class PlatformManager : MonoBehaviour
     void OnTriggerExit2D(Collider2D other)
     {
         if(other.gameObject.CompareTag("GlowEffect")) {
-            GlowEffectManager.GlowType _playerGlowType = GlowEffectManager.GlowType.Null;
-            GlowEffectManager.GlowType _objectGlowType = GlowEffectManager.GlowType.Null;
-
             if(other.transform.parent.gameObject.CompareTag("Player")) {
-                _playerGlowType = _lastPlayerGlowEffectInteracted.GetGlowType();
                 _lastPlayerGlowEffectInteracted = null;
             }
             else {
-                _objectGlowType = _lastGlowEffectInteracted.GetGlowType();
                 _lastGlowEffectInteracted = null;
             }
 
