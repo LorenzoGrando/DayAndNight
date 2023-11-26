@@ -15,7 +15,7 @@ public class PlayerInput : MonoBehaviour
     private GlowEffectManager _glowEffectManager;
     [SerializeField]
     private ControlMap inputActions;
-    public enum InputMaps {Gameplay, UI, Tutorial};
+    public enum InputMaps {Gameplay, UI, Tutorial, Cutscene};
     private InputMaps activeInputMap;
     void OnEnable()
     {

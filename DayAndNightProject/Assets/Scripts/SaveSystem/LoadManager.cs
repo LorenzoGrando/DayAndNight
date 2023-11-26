@@ -9,6 +9,7 @@ public class LoadManager : MonoBehaviour
     PlayerDataManager dataManager;
     ConsumableLoader consumableLoader;
     PlayerAnimationManager animManager;
+    CutsceneManager cutsceneManager;
 
     void OnEnable()
     {
@@ -17,6 +18,7 @@ public class LoadManager : MonoBehaviour
         dataManager ??= FindObjectOfType<PlayerDataManager>();
         consumableLoader ??= FindObjectOfType<ConsumableLoader>();
         animManager ??= FindObjectOfType<PlayerAnimationManager>();
+        cutsceneManager ??= FindObjectOfType<CutsceneManager>();
         SaveLoadSystem.OnLoadGame += PerformLoadGame;
         SaveLoadSystem.OnSaveGame += OnNewGameLoad;
         
@@ -43,6 +45,8 @@ public class LoadManager : MonoBehaviour
         consumableLoader.OnGameLoad(loadData);
         animManager.UpdateActiveSprite(loadData);
         animManager.UpdateCape(loadData.savedPlayerData.currentInventory.ReturnCurrentInventoryData().activeCapeIndexValue);
+        bool cloudCoverage = shrineLoader.shrineSaveData.sceneShrineData[0].status == Shrine.ShrineTypeStatus.Uncomplete;
+        cutsceneManager.EndMenuCutscene(cloudCoverage);
 
         UpdatePlayerToLoad(loadData);
     }
@@ -54,10 +58,13 @@ public class LoadManager : MonoBehaviour
             dataManager ??= FindObjectOfType<PlayerDataManager>();
             consumableLoader ??= FindObjectOfType<ConsumableLoader>(); 
             animManager ??= FindObjectOfType<PlayerAnimationManager>();
+            cutsceneManager ??= FindObjectOfType<CutsceneManager>();
 
             dataManager.ResetInventory();
             FindObjectOfType<PlayerSpawnManager>().EnableSpawnCheckpoint(loadData);
             animManager.UpdateActiveSprite(loadData);
+            
+            cutsceneManager.StartMenuCutscene();
         }
     }
     void UpdatePlayerToLoad(SaveData loadData) {
