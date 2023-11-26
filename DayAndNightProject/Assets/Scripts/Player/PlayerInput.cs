@@ -11,10 +11,11 @@ public class PlayerInput : MonoBehaviour
     private InGameMenuManager _inGameMenuManager;
     [SerializeField]
     private PlayerInteractor interactor;
+    private TutorialScreenManager _tutorialManager;
     private GlowEffectManager _glowEffectManager;
     [SerializeField]
     private ControlMap inputActions;
-    public enum InputMaps {Gameplay, UI};
+    public enum InputMaps {Gameplay, UI, Tutorial};
     private InputMaps activeInputMap;
     void OnEnable()
     {
@@ -22,6 +23,7 @@ public class PlayerInput : MonoBehaviour
         _characterMenuManager = FindObjectOfType<CharacterMenuManager>();
         _mainMenuManager = FindObjectOfType<MainMenuManager>();
         _inGameMenuManager = FindObjectOfType<InGameMenuManager>();
+        _tutorialManager = FindObjectOfType<TutorialScreenManager>();
         if(transform.childCount > 0) {
             _glowEffectManager = GetComponentInChildren<GlowEffectManager>();
         }
@@ -48,6 +50,9 @@ public class PlayerInput : MonoBehaviour
         }
         else if(activeInputMap == InputMaps.UI) {
             UIInputs();
+        }
+        else if(activeInputMap == InputMaps.Tutorial) {
+            TutorialInputs();
         }
     }
 
@@ -119,7 +124,16 @@ public class PlayerInput : MonoBehaviour
         _inGameMenuManager.InputUpdate(directionalInput, interactInput, escapeInput);
     }
 
+    private void TutorialInputs() {
+        float interactInput = inputActions.UI.Interact.triggered ? 1 : 0;
+        float escapeInput = inputActions.UI.Escape.triggered ? 1 : 0;
+
+        _tutorialManager.UpdatePlayerInput(interactInput, escapeInput);
+    }
+
     public void UpdateActiveActionMap(InputMaps newActiveMap) {
+        _player.SetDirectionalInput(0);
+        _player.SetJumpInput(0);
         activeInputMap = newActiveMap;
     }
 }
