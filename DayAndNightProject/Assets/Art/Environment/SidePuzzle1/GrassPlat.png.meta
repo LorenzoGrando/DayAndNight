@@ -131,7 +131,7 @@ TextureImporter:
         width: 950
         height: 2012
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -152,7 +152,7 @@ TextureImporter:
         width: 1134
         height: 1900
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -160,6 +160,27 @@ TextureImporter:
       bones: []
       spriteID: f78585e29cbc48a46903b6309b2b49f5
       internalID: 1327852973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GrassPlat_2
+      rect:
+        serializedVersion: 2
+        x: 4292
+        y: 0
+        width: 708
+        height: 1889
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9abef38f672bfc644a9fb4aba37b1cf3
+      internalID: -1661687683
       vertices: []
       indices: 
       edges: []
@@ -177,6 +198,7 @@ TextureImporter:
     nameFileIdTable:
       GrassPlat_0: 805116164
       GrassPlat_1: 1327852973
+      GrassPlat_2: -1661687683
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
