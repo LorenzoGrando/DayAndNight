@@ -22,6 +22,8 @@ public class MainMenuManager : MonoBehaviour
     private GameObject optionsSelectorObject;
     [SerializeField]
     private GameObject conflictSelectorObject;
+    [SerializeField] 
+    private  GameObject logoManager;
     private GameObject activeSelectorObject;
     private int currentHoverIndex = 0;
     private float lastSelectorUpdateTime;
@@ -79,6 +81,7 @@ public class MainMenuManager : MonoBehaviour
         foreach(GameObject menuObject in buttonTiles) {
             menuObject.SetActive(isVisible);
         }
+        logoManager.SetActive(isVisible);
         mainSelectorObject.SetActive(isVisible);
     }
 
