@@ -10,6 +10,7 @@ public class TutorialScreenManager : MonoBehaviour
     private PlayerInput _playerInput;
     private bool isActive = false;
     private int lastActiveIndex = 0;
+    private bool activatedConsumableTut = false;
 
     void OnEnable()
     {
@@ -24,12 +25,17 @@ public class TutorialScreenManager : MonoBehaviour
         }
     }
 
-    public void TriggerTutorial (int screenIndex) {
-        _playerInput.UpdateActiveActionMap(PlayerInput.InputMaps.Tutorial);
-        lastActiveIndex = screenIndex;
-        tutorialStarters[screenIndex].SetActive(true);
-        tutorialStarters[screenIndex].GetComponentInChildren<Animator>().SetTrigger("TriggerStart");
-        isActive = true;
+    public void TriggerTutorial (int screenIndex, bool isConsumable) {
+        if(!isConsumable || activatedConsumableTut == false) {
+            if(isConsumable) {
+                activatedConsumableTut = true;
+            }
+            _playerInput.UpdateActiveActionMap(PlayerInput.InputMaps.Tutorial);
+            lastActiveIndex = screenIndex;
+            tutorialStarters[screenIndex].SetActive(true);
+            tutorialStarters[screenIndex].GetComponentInChildren<Animator>().SetTrigger("TriggerStart");
+            isActive = true;
+        }
     }
 
     private void DisableTutorial() {
