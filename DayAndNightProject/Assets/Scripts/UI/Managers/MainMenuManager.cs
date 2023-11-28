@@ -221,7 +221,6 @@ public class MainMenuManager : MonoBehaviour
     private void StartGame() {
         fadeOutScreen.SetTrigger("PlayFadeIn");
         FindObjectOfType<MenuSoundManager>().FadeOutMenuSong();
-        FindObjectOfType<PlayerInput>().UpdateActiveActionMap(PlayerInput.InputMaps.Gameplay);
         MethodToCallback callback = DisableMenu;
         StartCoroutine(routine:DelayCallbackBySeconds(2.75f, callback));
     }
@@ -236,6 +235,10 @@ public class MainMenuManager : MonoBehaviour
 
     private void OnLoadGame() {
         SaveLoadSystem.Load();
+        SaveData saveData = SaveLoadSystem.GetCurrentSave(out bool isDefault);
+        if(!saveData.isDefault) {
+            FindObjectOfType<PlayerInput>().UpdateActiveActionMap(PlayerInput.InputMaps.Gameplay);
+        }
         StartGame();
     }
 

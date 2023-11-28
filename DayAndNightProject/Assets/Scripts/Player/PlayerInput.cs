@@ -54,6 +54,9 @@ public class PlayerInput : MonoBehaviour
         else if(activeInputMap == InputMaps.Tutorial) {
             TutorialInputs();
         }
+        else if (activeInputMap == InputMaps.Cutscene) {
+            return;
+        }
     }
 
     private void GameplayInputs() {
@@ -135,5 +138,6 @@ public class PlayerInput : MonoBehaviour
         _player.SetDirectionalInput(0);
         _player.SetJumpInput(0);
         activeInputMap = newActiveMap;
+        Debug.Log(activeInputMap);
     }
 }

@@ -8,12 +8,16 @@ public class TutorialObject : MonoBehaviour
     [SerializeField]
     private int screenIndex;
     [SerializeField]
+    private bool isConsumable;
+    [SerializeField]
     private TutorialScreenManager _tutManager;
 
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        _tutManager.TriggerTutorial(screenIndex);
-        gameObject.SetActive(false);
+        if(other.CompareTag("Player")) {
+            _tutManager.TriggerTutorial(screenIndex, isConsumable);
+            gameObject.SetActive(false);
+        }
     }
 }
