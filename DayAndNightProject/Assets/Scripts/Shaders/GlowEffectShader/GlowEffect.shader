@@ -99,14 +99,12 @@ Shader "Custom/GlowEffect"
 
                 float4 screenColor = SAMPLE_TEXTURE2D(_ScreenRenderTexture, sampler_ScreenRenderTexture, i.screenPos.xy / i.screenPos.w);
                 float4 textureColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.textureScrollUV);
-                //textureColor *= _TemporaryColor;
                 if(_isAdditive > 0.85) {
                     screenColor += (textureColor) / _Intensity;
                 }
                 else {
                     screenColor *= (textureColor) * _Intensity;
                 }
-                //screenColor += textureColor;
 
                 if(invertedPolar.x < 1 - _OutlineWidth) {
                     return _OutlineColor;
