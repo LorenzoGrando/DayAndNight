@@ -13,6 +13,7 @@ public class PlatformManager : MonoBehaviour
     private PlatformData thisPlatformData;
     private GameObject sunSpriteObject;
     private Collider2D sunSpriteObjectCollider;
+    public List<GlowEffectManager> totemGlows;
 
     private float _timeSinceLastCollisionWithGlow;
     private float _intervalToWait = 5;
@@ -25,14 +26,17 @@ public class PlatformManager : MonoBehaviour
     void Start()
     {
         ResetPlatformsToDefaultState();
+        totemGlows = new List<GlowEffectManager>();
     }
 
     void Update()
     {
+        /*
         if(_timeSinceLastCollisionWithGlow + _intervalToWait < Time.time && !_isActivelyColliding) {
             _timeSinceLastCollisionWithGlow = Time.time;
             ResetPlatformsToDefaultState();
         }
+        */
     }
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -47,6 +51,9 @@ public class PlatformManager : MonoBehaviour
             }
             else {
                 _lastGlowEffectInteracted = other.GetComponentInParent<GlowEffectManager>();
+                if(!totemGlows.Contains(_lastGlowEffectInteracted)) {
+                    totemGlows.Add(_lastGlowEffectInteracted);
+                }
                     colliderGlowType = _lastGlowEffectInteracted.GetGlowType();
                     OnEnterGlowBehaviour(colliderGlowType);
                 
@@ -57,21 +64,21 @@ public class PlatformManager : MonoBehaviour
     void OnTriggerExit2D(Collider2D other)
     {
         if(other.gameObject.CompareTag("GlowEffect")) {
+            GlowEffectManager glow = null;
             if(other.transform.parent.gameObject.CompareTag("Player")) {
                 _lastPlayerGlowEffectInteracted = null;
             }
             else {
                 _lastGlowEffectInteracted = null;
-            }
-
-            
+                glow = other.GetComponentInParent<GlowEffectManager>(); 
+            }           
             if(_lastPlayerGlowEffectInteracted == null && _lastGlowEffectInteracted != null) {
                 if((int)_lastGlowEffectInteracted.GetGlowType() != (int)thisPlatformData.thisPlatformInteractionType) {
-                    OnExitGlowBehaviour();
+                    OnExitGlowBehaviour(glow);
                 }
             }
             else {
-                OnExitGlowBehaviour();
+                OnExitGlowBehaviour(glow);
             }
         }
     }
@@ -103,8 +110,17 @@ public class PlatformManager : MonoBehaviour
         }
     }
 
-    private void OnExitGlowBehaviour() {
+    private void OnExitGlowBehaviour(GlowEffectManager glow) {
+        Debug.Log("Call tracking debug");
         _isActivelyColliding = false;
+        if(glow != null) {
+            if(totemGlows.Contains(glow)) {
+                totemGlows.Remove(glow);
+                if(totemGlows.Count > 0) {
+                    return;
+                }
+            }
+        }
         if(thisPlatformData.thisPlatformInteractionType == PlatformData.PlatformInteractionBehaviour.Sun) {
             UpdatePlatformCollider(true);
             sunSpriteObject.SetActive(true);
