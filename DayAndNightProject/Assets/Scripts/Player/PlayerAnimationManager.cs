@@ -19,6 +19,16 @@ public class PlayerAnimationManager : MonoBehaviour
     public int activePlayerSprite = 0;
     private Animator _animator;
 
+    private int tempCapeIndexAnim = 0;
+
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Backspace)) {
+            tempCapeIndexAnim++;
+            UpdateCape(tempCapeIndexAnim);
+        }
+    }
+
     void OnEnable()
     {
         _player = GetComponentInParent<Player>();
