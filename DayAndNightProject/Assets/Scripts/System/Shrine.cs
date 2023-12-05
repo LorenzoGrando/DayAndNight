@@ -56,6 +56,12 @@ public class Shrine : MonoBehaviour
                     shrineClouds.FadeOutClouds();
                 break;
         }
+        CelestialTree[] trees = FindObjectsOfType<CelestialTree>();
+        foreach(CelestialTree treeInstance in trees) {
+            if(treeInstance.shrineToReact == this) {
+                treeInstance.ActivateTree(shrineData);
+            }
+        }
         OnShrineLoad?.Invoke(shrineData);
     }
 
@@ -77,7 +83,7 @@ public class Shrine : MonoBehaviour
         StartCoroutine(DelayRecallSpawnPos(animDurationDelay/2));
 
         if(isLastShrine) {
-            FindObjectOfType<EndGameScreenManager>().StartEndCutscene();
+            FindObjectOfType<EndGameScreenManager>().StartEndCutscene(thisShrineStatus);
         }
     }
 
