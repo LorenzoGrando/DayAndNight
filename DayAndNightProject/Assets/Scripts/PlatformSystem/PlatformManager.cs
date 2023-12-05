@@ -28,16 +28,6 @@ public class PlatformManager : MonoBehaviour
         ResetPlatformsToDefaultState();
         totemGlows = new List<GlowEffectManager>();
     }
-
-    void Update()
-    {
-        /*
-        if(_timeSinceLastCollisionWithGlow + _intervalToWait < Time.time && !_isActivelyColliding) {
-            _timeSinceLastCollisionWithGlow = Time.time;
-            ResetPlatformsToDefaultState();
-        }
-        */
-    }
     void OnTriggerEnter2D(Collider2D other)
     {
         GlowEffectManager.GlowType colliderGlowType;
